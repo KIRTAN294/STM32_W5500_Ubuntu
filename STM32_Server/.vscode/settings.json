@@ -1,0 +1,10 @@
+{
+    "C_Cpp.errorSquiggles": "enabled",
+    "files.associations": {
+        "ws2tcpip.h": "c",
+        "errno.h": "c",
+        "tcp.h": "c",
+        "stdio.h": "c",
+        "sched.h": "c"
+    }
+}

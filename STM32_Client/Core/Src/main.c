@@ -1,0 +1,853 @@
+/* USER CODE BEGIN Header */
+/**
+  ******************************************************************************
+  * @file           : main.c
+  * @brief          : Main program body
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
+/* USER CODE END Header */
+/* Includes ------------------------------------------------------------------*/
+#include "main.h"
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+#include<stdio.h>
+#include"socket.h"
+#include<string.h>
+#include<stdbool.h>
+#include "bms_can.h"
+#include <stdint.h>
+/* USER CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+#define Client
+#define TCP_SOCKET    0
+#define LOCAL_PORT    5555
+#define BUFFER_SIZE   28
+#define MAX_MESSAGES (BUFFER_SIZE / sizeof(EulerAngles))
+#define TOTAL_BUFFER_SIZE sizeof(Master_BMS_Data_t)
+#define Send_IMU_Data 1
+#define Send_BMS_Data 2
+/* USER CODE END PM */
+
+/* Private variables ---------------------------------------------------------*/
+FDCAN_HandleTypeDef hfdcan1;
+
+SPI_HandleTypeDef hspi2;
+DMA_HandleTypeDef hdma_spi2_rx;
+DMA_HandleTypeDef hdma_spi2_tx;
+
+TIM_HandleTypeDef htim2;
+
+/* USER CODE BEGIN PV */
+uint8_t S_ADDR[4] = {176,162,10,2};
+uint16_t S_PORT = 6565;
+uint8_t RxData[8];
+uint8_t rxBuffer[BUFFER_SIZE];
+uint8_t request[128];
+uint8_t accept[40];
+uint16_t buffer_index = 0;
+uint8_t count_BMS = 0;
+uint8_t count_IMU = 0;
+FDCAN_RxHeaderTypeDef RxHeader;
+bool Newmessage = false;
+bool Nextmessage = false;
+bool Newmessage1= false;
+bool Nextmessage1 = false;
+int total_size = 0;
+volatile uint32_t last_imu_time= 0;
+volatile uint8_t spiTxComplete = 1;
+volatile uint8_t spiRxComplete = 1;
+/* USER CODE END PV */
+
+/* Private function prototypes -----------------------------------------------*/
+void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+static void MX_DMA_Init(void);
+static void MX_FDCAN1_Init(void);
+static void MX_SPI2_Init(void);
+static void MX_TIM2_Init(void);
+/* USER CODE BEGIN PFP */
+
+/* USER CODE END PFP */
+
+/* Private user code ---------------------------------------------------------*/
+/* USER CODE BEGIN 0 */
+float bytesToFloat(uint8_t *bytes) {
+
+    float value;
+    memcpy(&value, bytes, sizeof(float));
+    return value;
+}
+
+typedef uint8_t Commandtype;
+Commandtype received_cmd;
+
+typedef struct {
+
+    APP_flag_error_t status;
+    BAT_BMS_IntTemp_t status1;
+    BAT_BMS_ExtTemp_t status2;
+    BAT_AFE_Fet_Status_t status3;
+    BAT_BMS_Charger_Load_Status_t status4;
+    BMS_Temp_Sensor_Present_t status5;
+    BAT_GAUGE_OvrVIEW_t status6;
+    BAT_GAUGE_ViT_t status7;
+
+} Master_BMS_Data_t;
+
+Master_BMS_Data_t master_data;
+uint8_t Buffer[TOTAL_BUFFER_SIZE];
+
+typedef struct {
+
+    float roll;
+    float pitch;
+    float yaw;
+    float accx;
+    float accy;
+    float accz;
+    uint32_t timestamp;
+
+} EulerAngles;
+
+EulerAngles angles;
+EulerAngles last_angles;
+EulerAngles txBuffer[MAX_MESSAGES];
+uint8_t large_buffer[BUFFER_SIZE];
+
+wiz_NetInfo netInfo={
+
+		.mac = {0x02, 0x00, 0x00, 0x00, 0x00, 0x01},
+		.ip = {176,162,10,1},
+		.sn = {255,255,255,0},
+		.dns = {0,0,0,0},
+		.dhcp = NETINFO_STATIC
+
+};
+
+void W5500_Init(void);
+void W5500_Select(void);
+void W5500_Unselect(void);
+uint8_t W5500_ReadByte(void);
+void W5500_WriteByte(uint8_t byte);
+void W5500_ReadBuff(uint8_t *buff , uint16_t len);
+void W5500_WriteBuff(uint8_t *buff ,uint16_t len);
+
+
+void W5500_Init(){
+
+
+	HAL_GPIO_WritePin(RST_PIN_GPIO_Port,RST_PIN_Pin,GPIO_PIN_RESET);
+	HAL_Delay(1);
+	HAL_GPIO_WritePin(RST_PIN_GPIO_Port,RST_PIN_Pin,GPIO_PIN_SET);
+
+    reg_wizchip_cs_cbfunc(W5500_Select, W5500_Unselect);
+    reg_wizchip_spi_cbfunc(W5500_ReadByte, W5500_WriteByte);
+    reg_wizchip_spiburst_cbfunc(W5500_ReadBuff, W5500_WriteBuff);
+
+    uint8_t memsize[2][8] = {{2,2,2,2,2,2,2,2}, {2,2,2,2,2,2,2,2}};
+    if(wizchip_init(memsize[0], memsize[1]) < 0)
+    {
+    	Error_Handler();
+    }
+
+}
+void W5500_Select(void)
+{
+    HAL_GPIO_WritePin(CS_PIN_GPIO_Port,CS_PIN_Pin,GPIO_PIN_RESET);
+}
+
+void W5500_Unselect(void)
+{
+    HAL_GPIO_WritePin(CS_PIN_GPIO_Port, CS_PIN_Pin, GPIO_PIN_SET);
+}
+
+uint8_t W5500_ReadByte(void)
+{
+    uint8_t byte;
+    HAL_SPI_Receive(&hspi2, &byte, 1, HAL_MAX_DELAY);
+    return byte;
+}
+void W5500_WriteByte(uint8_t byte)
+
+{
+    HAL_SPI_Transmit(&hspi2, &byte, 1, HAL_MAX_DELAY);
+}
+
+void W5500_ReadBuff(uint8_t* buff, uint16_t len)
+{
+	 spiRxComplete = 0;
+    HAL_SPI_Receive_DMA(&hspi2, buff, len);
+    while(HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
+
+}
+void W5500_WriteBuff(uint8_t* buff, uint16_t len)
+{
+	 spiTxComplete = 0;
+    HAL_SPI_Transmit_DMA(&hspi2, buff, len);
+    while(HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
+
+}
+
+void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+    if(hspi->Instance == SPI2)
+    {
+    	 spiTxComplete = 1;
+    }
+}
+void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+    if(hspi->Instance == SPI2)
+    {
+    	 spiRxComplete = 1;
+    }
+}
+
+void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs){
+
+	if(HAL_FDCAN_GetRxMessage(hfdcan,FDCAN_RX_FIFO0,&RxHeader,RxData)== HAL_OK){
+
+		switch(RxHeader.Identifier){
+
+        case 0x110:
+            Unpack_APP_flag_error_bms_can(&master_data.status, RxData, RxHeader.DataLength);
+            count_BMS++;
+            break;
+
+        case BAT_BMS_IntTemp_CANID:
+            Unpack_BAT_BMS_IntTemp_bms_can(&master_data.status1, RxData, RxHeader.DataLength);
+            count_BMS++;
+            break;
+
+        case BAT_BMS_ExtTemp_CANID:
+            Unpack_BAT_BMS_ExtTemp_bms_can(&master_data.status2, RxData, RxHeader.DataLength);
+            count_BMS++;
+            break;
+
+        case 0x1FF310:
+            Unpack_BAT_AFE_Fet_Status_bms_can(&master_data.status3, RxData, RxHeader.DataLength);
+            count_BMS++;
+            break;
+
+        case 0x1FF615:
+            Unpack_BAT_BMS_Charger_Load_Status_bms_can(&master_data.status4, RxData, RxHeader.DataLength);
+            count_BMS++;
+            break;
+
+        case 0x1FF110:
+            Unpack_BMS_Temp_Sensor_Present_bms_can(&master_data.status5, RxData, RxHeader.DataLength);
+            count_BMS++;
+            break;
+
+        case 0x1FF810:
+            Unpack_BAT_GAUGE_OvrVIEW_bms_can(&master_data.status6, RxData, RxHeader.DataLength);
+            count_BMS++;
+            break;
+
+        case 0x1FF820:
+            Unpack_BAT_GAUGE_ViT_bms_can(&master_data.status7, RxData, RxHeader.DataLength);
+            count_BMS++;
+            break;
+
+//        case 0x22:
+//
+//             int16_t roll_rad = (RxData[0]<<8 ) | RxData[1];
+//             int16_t pitch_rad= (RxData[2]<<8)| RxData[3];
+//             int16_t yaw_rad = (RxData[4]<<8 )| RxData[5];
+//
+//              if((roll_rad>=0 && roll_rad<=23040) ||(pitch_rad>=0 && pitch_rad<=23040) || (yaw_rad>=0 && yaw_rad<=23040)){
+//
+//             angles.roll= (roll_rad * 0.0078f);
+//             angles.pitch= (pitch_rad * 0.0078f);
+//             angles.yaw = (yaw_rad * 0.0078f);
+//
+//              }
+//              else if((roll_rad>=42496 && roll_rad<=65536) ||(pitch_rad>=42496 && pitch_rad<=65536) || (yaw_rad>=42496 && yaw_rad<=65536)){
+//
+//             angles.roll= (roll_rad - 65536)*0.0078;
+//             angles.pitch= (pitch_rad - 65536)*0.0078;
+//             angles.yaw = (yaw_rad - 65536)*0.0078;
+//
+//              }
+//             angles.timestamp = HAL_GetTick();
+//             count_IMU++;
+//             break;
+//
+//        case 0x34:
+//             int16_t accX = (RxData[0] << 8) | RxData[1];
+//             int16_t accY = (RxData[2] << 8) | RxData[3];
+//             int16_t accZ = (RxData[4] << 8) | RxData[5];
+//
+//
+//             angles.accx = accX * 0.0039;
+//             angles.accy = accY * 0.0039;
+//             angles.accz = accZ * 0.0039;
+//
+//             angles.timestamp = HAL_GetTick();
+//             count_IMU++;
+//             break;
+
+		case 0x11:
+		    angles.roll = bytesToFloat(&RxData[4]);
+		    angles.pitch = bytesToFloat(&RxData[0]);
+		    angles.timestamp = HAL_GetTick();
+		    count_IMU++;
+            break;
+
+	    case 0x12:
+		    angles.yaw = bytesToFloat(&RxData[0]);
+		    float ACCY= bytesToFloat(&RxData[4]);
+		    angles.accy = ACCY * (-9.81);
+		    angles.timestamp = HAL_GetTick();
+		    count_IMU++;
+		    break;
+
+		case 0x13:
+		    float ACCX=bytesToFloat(&RxData[0]);
+		    angles.accx = ACCX * 9.81;
+		    float ACCZ=bytesToFloat(&RxData[4]);
+		    angles.accz = ACCZ * 9.81;
+		    angles.timestamp = HAL_GetTick();
+		    count_IMU++;
+		    break;
+		}
+
+	    if (count_BMS >= 8)
+	    {
+	        memcpy(Buffer, &master_data, TOTAL_BUFFER_SIZE);
+	        Nextmessage = true;
+	        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1);
+	        count_BMS = 0;
+	    }
+        if (count_IMU >= 3){
+
+            last_angles = angles;
+		    Newmessage = true;
+	        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+		    count_IMU = 0;
+	   }
+	}
+}
+void sendbmsdata(void)
+{
+    if (Nextmessage && getSn_SR(TCP_SOCKET) == SOCK_ESTABLISHED)
+    {
+        int32_t sent = send(TCP_SOCKET, Buffer, TOTAL_BUFFER_SIZE);
+
+        if (sent == TOTAL_BUFFER_SIZE)
+        {
+            HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+            Nextmessage = false;
+        }
+        else
+        {
+            disconnect(TCP_SOCKET);
+        }
+    }
+}
+void sendimudata() {
+
+	uint32_t now = __HAL_TIM_GET_COUNTER(&htim2);
+    if (Newmessage) {
+
+        if (buffer_index < MAX_MESSAGES) {
+            memcpy(&txBuffer[buffer_index], (void*)&last_angles, sizeof(EulerAngles));
+            buffer_index++;
+        }
+
+        if (buffer_index >= MAX_MESSAGES) {
+            total_size = buffer_index * sizeof(EulerAngles);
+            memcpy(large_buffer, txBuffer, total_size);
+
+        if (now - last_imu_time >= 1 && getSn_SR(TCP_SOCKET) == SOCK_ESTABLISHED) {
+            int32_t sent = send(TCP_SOCKET, large_buffer, total_size);
+
+        if (sent > 0) {
+           	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+           	last_imu_time = now;
+           	uint16_t rec = getSn_RX_RSR(TCP_SOCKET);
+        if(rec >=2){
+           	recv(TCP_SOCKET,accept,sizeof(accept));
+           	}
+           }
+         }
+            buffer_index = 0;
+        }
+            Newmessage = false;
+    }
+
+}
+/* USER CODE END 0 */
+
+/**
+  * @brief  The application entry point.
+  * @retval int
+  */
+int main(void)
+{
+
+  /* USER CODE BEGIN 1 */
+
+  /* USER CODE END 1 */
+
+  /* MCU Configuration--------------------------------------------------------*/
+
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
+
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* Configure the system clock */
+  SystemClock_Config();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_DMA_Init();
+  MX_FDCAN1_Init();
+  MX_SPI2_Init();
+  MX_TIM2_Init();
+  /* USER CODE BEGIN 2 */
+  HAL_TIM_Base_Start_IT(&htim2);
+  if(HAL_FDCAN_Start(&hfdcan1)!= HAL_OK){
+
+	  Error_Handler();
+
+  }
+  if (HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
+         Error_Handler();
+     }
+
+ W5500_Init();
+ wizchip_setnetinfo(&netInfo);
+
+#ifdef  Client
+ uint8_t SOCKET = socket(TCP_SOCKET,Sn_MR_TCP,LOCAL_PORT,0);
+ if(SOCKET == TCP_SOCKET){
+
+	  int mode = getSn_MR(TCP_SOCKET);
+	  mode |= Sn_MR_ND;
+	  setSn_MR(TCP_SOCKET, mode);
+	  connect(TCP_SOCKET, S_ADDR, S_PORT);
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0,GPIO_PIN_SET);
+
+}
+#endif
+  /* USER CODE END 2 */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+  while (1)
+  {
+#ifdef Client
+
+	  switch (getSn_SR(TCP_SOCKET)) {
+	          case SOCK_ESTABLISHED:
+	              if (getSn_IR(TCP_SOCKET) & Sn_IR_CON) {
+	                  setSn_IR(TCP_SOCKET, Sn_IR_CON);
+	                  Newmessage1 = false;
+	                  Nextmessage1 = false;
+	              }
+
+	              uint16_t rxSize = getSn_RX_RSR(TCP_SOCKET);
+	              if (rxSize >= sizeof(Commandtype)) {
+	                  int32_t received = recv(TCP_SOCKET, &received_cmd, sizeof(received_cmd));
+	                  if (received == sizeof(received_cmd)) {
+
+	                      if (received_cmd == Send_IMU_Data) {
+	                          Newmessage1 = true;
+	                          Nextmessage1 = false;
+	                          HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+	                      } else if (received_cmd == Send_BMS_Data) {
+	                          Newmessage1 = false;
+	                          Nextmessage1 = true;
+	                          HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+	                      }
+	                  }
+	              }
+	              if (Newmessage1 && getSn_SR(TCP_SOCKET) == SOCK_ESTABLISHED){
+	                  sendimudata();
+	              }
+	              if (Nextmessage1) {
+	                  sendbmsdata();
+	              }
+	              break;
+
+	          case SOCK_CLOSE_WAIT:
+	              disconnect(TCP_SOCKET);
+
+	              break;
+
+	          case SOCK_CLOSED:
+	              if (socket(TCP_SOCKET, Sn_MR_TCP, LOCAL_PORT, 0) == TCP_SOCKET) {
+	                  connect(TCP_SOCKET, S_ADDR, S_PORT);
+	                  total_size = 0;
+
+	              }
+	              break;
+	           }
+	      if (getSn_IR(TCP_SOCKET) & Sn_IR_TIMEOUT) {
+	          setSn_IR(TCP_SOCKET, Sn_IR_TIMEOUT);
+	          disconnect(TCP_SOCKET);
+
+	      }
+#endif
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+  }
+  /* USER CODE END 3 */
+}
+
+/**
+  * @brief System Clock Configuration
+  * @retval None
+  */
+void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+
+  /** Configure the main internal regulator output voltage
+  */
+  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1_BOOST);
+
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
+  */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV1;
+  RCC_OscInitStruct.PLL.PLLN = 20;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV4;
+  RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Initializes the CPU, AHB and APB buses clocks
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+/**
+  * @brief FDCAN1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_FDCAN1_Init(void)
+{
+
+  /* USER CODE BEGIN FDCAN1_Init 0 */
+
+  /* USER CODE END FDCAN1_Init 0 */
+
+  /* USER CODE BEGIN FDCAN1_Init 1 */
+
+  /* USER CODE END FDCAN1_Init 1 */
+  hfdcan1.Instance = FDCAN1;
+  hfdcan1.Init.ClockDivider = FDCAN_CLOCK_DIV1;
+  hfdcan1.Init.FrameFormat = FDCAN_FRAME_CLASSIC;
+  hfdcan1.Init.Mode = FDCAN_MODE_NORMAL;
+  hfdcan1.Init.AutoRetransmission = ENABLE;
+  hfdcan1.Init.TransmitPause = DISABLE;
+  hfdcan1.Init.ProtocolException = DISABLE;
+  hfdcan1.Init.NominalPrescaler = 1;
+  hfdcan1.Init.NominalSyncJumpWidth = 16;
+  hfdcan1.Init.NominalTimeSeg1 = 63;
+  hfdcan1.Init.NominalTimeSeg2 = 16;
+  hfdcan1.Init.DataPrescaler = 2;
+  hfdcan1.Init.DataSyncJumpWidth = 4;
+  hfdcan1.Init.DataTimeSeg1 = 5;
+  hfdcan1.Init.DataTimeSeg2 = 5;
+  hfdcan1.Init.StdFiltersNbr = 2;
+  hfdcan1.Init.ExtFiltersNbr = 4;
+  hfdcan1.Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
+  if (HAL_FDCAN_Init(&hfdcan1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN FDCAN1_Init 2 */
+  FDCAN_FilterTypeDef s;
+
+        s.FilterConfig = FDCAN_FILTER_TO_RXFIFO0 ;
+        s.FilterType = FDCAN_STANDARD_ID ;
+        s.IdType= FDCAN_FILTER_DUAL;
+
+        s.FilterID1 = 0x110;
+        s.FilterID2 = 0x11;
+        s.FilterIndex = 0;
+
+        s.FilterID1 = 0x12;
+        s.FilterID2 = 0x13;
+        s.FilterIndex = 1;
+
+
+
+    if(HAL_FDCAN_ConfigFilter(&hfdcan1,&s)!= HAL_OK){
+
+      	 Error_Handler();
+        }
+
+  FDCAN_FilterTypeDef Filterconfigure;
+
+        Filterconfigure.FilterConfig = FDCAN_FILTER_TO_RXFIFO0 ;
+        Filterconfigure.FilterType = FDCAN_EXTENDED_ID ;
+        Filterconfigure.IdType= FDCAN_FILTER_DUAL;
+
+        Filterconfigure.FilterID1 = 0x1FF310;
+        Filterconfigure.FilterID2 = 0x1FF310;
+        Filterconfigure.FilterIndex = 0;
+
+        Filterconfigure.FilterID1 = 0x1FF615;
+        Filterconfigure.FilterID2 = 0x1FF110;
+        Filterconfigure.FilterIndex = 1;
+
+        Filterconfigure.FilterID1 = 0x1FF611;
+        Filterconfigure.FilterID2 = 0x1FF612;
+        Filterconfigure.FilterIndex = 2;
+
+        Filterconfigure.FilterID1 = 0x1FF810;
+        Filterconfigure.FilterID2 = 0x1FF820;
+        Filterconfigure.FilterIndex = 3;
+
+    if(HAL_FDCAN_ConfigFilter(&hfdcan1,&Filterconfigure)!= HAL_OK){
+
+      	 Error_Handler();
+        }
+  /* USER CODE END FDCAN1_Init 2 */
+
+}
+
+/**
+  * @brief SPI2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_SPI2_Init(void)
+{
+
+  /* USER CODE BEGIN SPI2_Init 0 */
+
+  /* USER CODE END SPI2_Init 0 */
+
+  /* USER CODE BEGIN SPI2_Init 1 */
+
+  /* USER CODE END SPI2_Init 1 */
+  /* SPI2 parameter configuration*/
+  hspi2.Instance = SPI2;
+  hspi2.Init.Mode = SPI_MODE_MASTER;
+  hspi2.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi2.Init.NSS = SPI_NSS_SOFT;
+  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+  hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
+  hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
+  hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi2.Init.CRCPolynomial = 7;
+  hspi2.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
+  hspi2.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+  if (HAL_SPI_Init(&hspi2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN SPI2_Init 2 */
+
+  /* USER CODE END SPI2_Init 2 */
+
+}
+
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 159;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 999;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
+
+}
+
+/**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMAMUX1_CLK_ENABLE();
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Channel1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
+  /* DMA1_Channel2_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel2_IRQn);
+
+}
+
+/**
+  * @brief GPIO Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_GPIO_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+
+  /* USER CODE END MX_GPIO_Init_1 */
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOF_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_5|RST_PIN_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(CS_PIN_GPIO_Port, CS_PIN_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : PA0 PA1 PA5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_5;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : RST_PIN_Pin */
+  GPIO_InitStruct.Pin = RST_PIN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  HAL_GPIO_Init(RST_PIN_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : CS_PIN_Pin */
+  GPIO_InitStruct.Pin = CS_PIN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  HAL_GPIO_Init(CS_PIN_GPIO_Port, &GPIO_InitStruct);
+
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+
+  /* USER CODE END MX_GPIO_Init_2 */
+}
+
+/* USER CODE BEGIN 4 */
+
+/* USER CODE END 4 */
+
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
+void Error_Handler(void)
+{
+  /* USER CODE BEGIN Error_Handler_Debug */
+  /* User can add his own implementation to report the HAL error return state */
+  __disable_irq();
+  while (1)
+  {
+  }
+  /* USER CODE END Error_Handler_Debug */
+}
+
+#ifdef  USE_FULL_ASSERT
+/**
+  * @brief  Reports the name of the source file and the source line number
+  *         where the assert_param error has occurred.
+  * @param  file: pointer to the source file name
+  * @param  line: assert_param error line source number
+  * @retval None
+  */
+void assert_failed(uint8_t *file, uint32_t line)
+{
+  /* USER CODE BEGIN 6 */
+  /* User can add his own implementation to report the file name and line number,
+     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  /* USER CODE END 6 */
+}
+#endif /* USE_FULL_ASSERT */
