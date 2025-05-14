@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np 
 
-df = pd.read_csv('New_001.csv')
+df = pd.read_csv('New_002.csv')
 
 plt.hist(df['Final_Time'],bins=10,edgecolor='black')
 plt.xticks(ticks=np.arange(0,3,0.2)) 
