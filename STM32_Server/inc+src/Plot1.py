@@ -1,10 +1,12 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np 
 
 df = pd.read_csv('New_001.csv')
 
-plt.scatter(df['sr.no'], df['Final_Time'])
-# plt.plot(df['sr.no'], df['Final_Time'],linestyle='-',label='Line')
+plt.hist(df['Final_Time'],bins=10,edgecolor='black')
+plt.xticks(ticks=np.arange(0,3,0.2)) 
+
 
 plt.xlabel('Sr.no')
 plt.ylabel('Time')
