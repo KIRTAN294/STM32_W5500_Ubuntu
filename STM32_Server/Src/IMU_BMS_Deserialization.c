@@ -10,7 +10,6 @@
 #include <netinet/tcp.h>
 #include <errno.h>
 #include <sched.h>
-
 #include "bms_can-config.h"
 #include "bms_can.h"
 #include "dbccodeconf.h"
@@ -24,6 +23,16 @@ int total_received = 0;
 #define Send_BMS_Data 2
 
 typedef uint8_t Commandtype;
+
+typedef struct{
+
+  uint32_t can_id;
+  uint32_t length;
+  uint32_t payload[12];
+
+}Ethernet_BMS_Packet;
+
+Ethernet_BMS_Packet eth_msg;
 
 typedef struct {
 
@@ -39,7 +48,7 @@ BAT_GAUGE_ViT_t status7;
 }Struct_A;
 
 Struct_A master_data;
-#define TOTAL_SIZE  sizeof(Struct_A)
+#define TOTAL_SIZE  sizeof(Ethernet_BMS_Packet)
 char Buffer[TOTAL_SIZE];
 
 typedef struct {
@@ -65,7 +74,7 @@ int main(int argc, char *argv[]) {
 
     int server_fd,nRet;
     struct sockaddr_in address;
-    int addrlen = sizeof(address);
+    socklen_t addrlen = sizeof(address);
 
      server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd < 0) {
@@ -170,7 +179,7 @@ else if( choice == Send_BMS_Data) {
 
     while (total_received < TOTAL_SIZE)
     {
-        nRet = recv(nClient, Buffer +total_received, TOTAL_SIZE - total_received, 0);
+        nRet = recv(nClient, ((uint8_t*)&eth_msg) +total_received, TOTAL_SIZE - total_received, 0);
         if (nRet == 0) {
             printf("Connection closed by client\n");
             break;
@@ -184,10 +193,46 @@ else if( choice == Send_BMS_Data) {
             }  
          total_received += nRet;     
     }
-    if (total_received == TOTAL_SIZE) {
+    if (total_received >= TOTAL_SIZE) {
 
-        memcpy(&master_data,Buffer,TOTAL_SIZE);
+      switch(eth_msg.can_id){
+               
+         case 0x110:
+            memcpy(&master_data.status, eth_msg.payload, sizeof(master_data.status));
+            break;
 
+        case BAT_BMS_IntTemp_CANID:
+            memcpy(&master_data.status1, eth_msg.payload,sizeof(master_data.status1));
+            break;
+
+        case BAT_BMS_ExtTemp_CANID:
+            memcpy(&master_data.status2, eth_msg.payload, sizeof(master_data.status2));
+            break;
+
+        case 0x1FF310:
+            memcpy(&master_data.status3, eth_msg.payload, sizeof(master_data.status3));
+            break;
+
+        case 0x1FF615:
+            memcpy(&master_data.status4, eth_msg.payload, sizeof(master_data.status4));
+            break;
+
+        case 0x1FF110:
+            memcpy(&master_data.status5, eth_msg.payload, sizeof(master_data.status5));
+            break;
+
+        case 0x1FF810:
+            memcpy(&master_data.status6, eth_msg.payload, sizeof(master_data.status6));
+            break;
+
+        case 0x1FF820:
+            memcpy(&master_data.status7, eth_msg.payload, sizeof(master_data.status7));
+            break;
+
+        default:
+            printf("Wrong ID:%u",eth_msg.can_id);
+            continue;
+      }
             printf("APP_flag_bat_highTemp : %d\n",master_data.status.APP_flag_bat_highTemp);
             printf("APP_flag_bat_lowTemp  : %d\n",master_data.status.APP_flag_bat_lowTemp);
             printf("APP_flag_bms_highTemp : %d\n",master_data.status.APP_flag_bms_highTemp);

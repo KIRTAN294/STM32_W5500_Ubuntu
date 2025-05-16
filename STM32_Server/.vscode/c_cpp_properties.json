@@ -3,10 +3,11 @@
     {
       "name": "Linux",
       "includePath": [
+        "${workspaceFolder}/Inc",
+        "${workspaceFolder}/Src",
         "/usr/include",
         "/usr/local/include",
-        "/usr/include/x86_64-linux-gnu",  
-        "${workspaceFolder}/**"
+        "/usr/include/x86_64-linux-gnu"
       ],
       "compilerPath": "/usr/bin/gcc",
       "cStandard": "gnu11",
