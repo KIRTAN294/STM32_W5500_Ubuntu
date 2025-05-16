@@ -1,6 +1,6 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Inc
+CFLAGS = -Wall -IInc
 
 # Source files
 SRCS = Src/IMU_BMS_Deserialization.c Src/bms_can.c 
