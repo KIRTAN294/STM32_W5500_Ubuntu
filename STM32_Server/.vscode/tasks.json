@@ -8,9 +8,9 @@
       "args": [
         "-Wall",
         "-g",
-        "-Iinc",
-        "src/IMU_BMS_Deserialization.c",
-        "src/bms_can.c",
+        "-IInc",
+        "Src/IMU_BMS_Deserialization.c",
+        "Src/bms_can.c",
         "-o",
         "IMU_BMS_Deserialization"
       ],
