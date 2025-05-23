@@ -1,0 +1,9 @@
+../Core/Src/tcp_server.c:24:6:W5500_Select	8	static
+../Core/Src/tcp_server.c:29:6:W5500_Unselect	8	static
+../Core/Src/tcp_server.c:34:9:W5500_ReadByte	16	static
+../Core/Src/tcp_server.c:40:6:W5500_WriteByte	16	static
+../Core/Src/tcp_server.c:46:6:W5500_ReadBuff	16	static
+../Core/Src/tcp_server.c:53:6:W5500_WriteBuff	16	static
+../Core/Src/tcp_server.c:60:6:HAL_SPI_TxCpltCallback	16	static
+../Core/Src/tcp_server.c:67:6:HAL_SPI_RxCpltCallback	16	static
+../Core/Src/tcp_server.c:74:6:W5500_Init	32	static

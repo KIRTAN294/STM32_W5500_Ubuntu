@@ -21,12 +21,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include<stdio.h>
-#include"socket.h"
-#include<string.h>
-#include<stdbool.h>
-#include "bms_can.h"
-#include <stdint.h>
+#include "tcp_server.h"
+#include "Imu_handler.h"
+#include "Bms_handler.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -41,14 +38,7 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-#define Client
-#define TCP_SOCKET    0
-#define LOCAL_PORT    5555
-#define BUFFER_SIZE   28
-#define MAX_MESSAGES (BUFFER_SIZE / sizeof(EulerAngles))
-#define TOTAL_BUFFER_SIZE sizeof(Master_BMS_Data_t)
-#define Send_IMU_Data 1
-#define Send_BMS_Data 2
+
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -64,21 +54,10 @@ TIM_HandleTypeDef htim2;
 uint8_t S_ADDR[4] = {176,162,10,2};
 uint16_t S_PORT = 6565;
 uint8_t RxData[8];
-uint8_t rxBuffer[BUFFER_SIZE];
-uint8_t request[128];
-uint8_t accept[40];
-uint16_t buffer_index = 0;
-uint8_t count_BMS = 0;
-uint8_t count_IMU = 0;
 FDCAN_RxHeaderTypeDef RxHeader;
-bool Newmessage = false;
-bool Nextmessage = false;
 bool Newmessage1= false;
 bool Nextmessage1 = false;
-int total_size = 0;
-volatile uint32_t last_imu_time= 0;
-volatile uint8_t spiTxComplete = 1;
-volatile uint8_t spiRxComplete = 1;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -94,310 +73,39 @@ static void MX_TIM2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-float bytesToFloat(uint8_t *bytes) {
-
-    float value;
-    memcpy(&value, bytes, sizeof(float));
-    return value;
-}
 
 typedef uint8_t Commandtype;
 Commandtype received_cmd;
-
-typedef struct {
-
-    APP_flag_error_t status;
-    BAT_BMS_IntTemp_t status1;
-    BAT_BMS_ExtTemp_t status2;
-    BAT_AFE_Fet_Status_t status3;
-    BAT_BMS_Charger_Load_Status_t status4;
-    BMS_Temp_Sensor_Present_t status5;
-    BAT_GAUGE_OvrVIEW_t status6;
-    BAT_GAUGE_ViT_t status7;
-
-} Master_BMS_Data_t;
-
-Master_BMS_Data_t master_data;
-uint8_t Buffer[TOTAL_BUFFER_SIZE];
-
-typedef struct {
-
-    float roll;
-    float pitch;
-    float yaw;
-    float accx;
-    float accy;
-    float accz;
-    uint32_t timestamp;
-
-} EulerAngles;
-
-EulerAngles angles;
-EulerAngles last_angles;
-EulerAngles txBuffer[MAX_MESSAGES];
-uint8_t large_buffer[BUFFER_SIZE];
-
-wiz_NetInfo netInfo={
-
-		.mac = {0x02, 0x00, 0x00, 0x00, 0x00, 0x01},
-		.ip = {176,162,10,1},
-		.sn = {255,255,255,0},
-		.dns = {0,0,0,0},
-		.dhcp = NETINFO_STATIC
-
-};
-
-void W5500_Init(void);
-void W5500_Select(void);
-void W5500_Unselect(void);
-uint8_t W5500_ReadByte(void);
-void W5500_WriteByte(uint8_t byte);
-void W5500_ReadBuff(uint8_t *buff , uint16_t len);
-void W5500_WriteBuff(uint8_t *buff ,uint16_t len);
-
-
-void W5500_Init(){
-
-
-	HAL_GPIO_WritePin(RST_PIN_GPIO_Port,RST_PIN_Pin,GPIO_PIN_RESET);
-	HAL_Delay(1);
-	HAL_GPIO_WritePin(RST_PIN_GPIO_Port,RST_PIN_Pin,GPIO_PIN_SET);
-
-    reg_wizchip_cs_cbfunc(W5500_Select, W5500_Unselect);
-    reg_wizchip_spi_cbfunc(W5500_ReadByte, W5500_WriteByte);
-    reg_wizchip_spiburst_cbfunc(W5500_ReadBuff, W5500_WriteBuff);
-
-    uint8_t memsize[2][8] = {{2,2,2,2,2,2,2,2}, {2,2,2,2,2,2,2,2}};
-    if(wizchip_init(memsize[0], memsize[1]) < 0)
-    {
-    	Error_Handler();
-    }
-
-}
-void W5500_Select(void)
-{
-    HAL_GPIO_WritePin(CS_PIN_GPIO_Port,CS_PIN_Pin,GPIO_PIN_RESET);
-}
-
-void W5500_Unselect(void)
-{
-    HAL_GPIO_WritePin(CS_PIN_GPIO_Port, CS_PIN_Pin, GPIO_PIN_SET);
-}
-
-uint8_t W5500_ReadByte(void)
-{
-    uint8_t byte;
-    HAL_SPI_Receive(&hspi2, &byte, 1, HAL_MAX_DELAY);
-    return byte;
-}
-void W5500_WriteByte(uint8_t byte)
-
-{
-    HAL_SPI_Transmit(&hspi2, &byte, 1, HAL_MAX_DELAY);
-}
-
-void W5500_ReadBuff(uint8_t* buff, uint16_t len)
-{
-	 spiRxComplete = 0;
-    HAL_SPI_Receive_DMA(&hspi2, buff, len);
-    while(HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
-
-}
-void W5500_WriteBuff(uint8_t* buff, uint16_t len)
-{
-	 spiTxComplete = 0;
-    HAL_SPI_Transmit_DMA(&hspi2, buff, len);
-    while(HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
-
-}
-
-void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-    if(hspi->Instance == SPI2)
-    {
-    	 spiTxComplete = 1;
-    }
-}
-void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-    if(hspi->Instance == SPI2)
-    {
-    	 spiRxComplete = 1;
-    }
-}
 
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs){
 
 	if(HAL_FDCAN_GetRxMessage(hfdcan,FDCAN_RX_FIFO0,&RxHeader,RxData)== HAL_OK){
 
+
 		switch(RxHeader.Identifier){
 
-        case 0x110:
-            Unpack_APP_flag_error_bms_can(&master_data.status, RxData, RxHeader.DataLength);
-            count_BMS++;
-            break;
-
+        case APP_flag_error_CANID:
         case BAT_BMS_IntTemp_CANID:
-            Unpack_BAT_BMS_IntTemp_bms_can(&master_data.status1, RxData, RxHeader.DataLength);
-            count_BMS++;
-            break;
-
         case BAT_BMS_ExtTemp_CANID:
-            Unpack_BAT_BMS_ExtTemp_bms_can(&master_data.status2, RxData, RxHeader.DataLength);
-            count_BMS++;
+        case BAT_AFE_Fet_Status_CANID:
+        case BAT_BMS_Charger_Load_Status_CANID:
+        case BMS_Temp_Sensor_Present_CANID:
+        case BAT_GAUGE_OvrVIEW_CANID:
+        case BAT_GAUGE_ViT_CANID:
+
+        	Handlebmsmessage(RxHeader.Identifier, RxData, RxHeader.DataLength);
             break;
 
-        case 0x1FF310:
-            Unpack_BAT_AFE_Fet_Status_bms_can(&master_data.status3, RxData, RxHeader.DataLength);
-            count_BMS++;
-            break;
-
-        case 0x1FF615:
-            Unpack_BAT_BMS_Charger_Load_Status_bms_can(&master_data.status4, RxData, RxHeader.DataLength);
-            count_BMS++;
-            break;
-
-        case 0x1FF110:
-            Unpack_BMS_Temp_Sensor_Present_bms_can(&master_data.status5, RxData, RxHeader.DataLength);
-            count_BMS++;
-            break;
-
-        case 0x1FF810:
-            Unpack_BAT_GAUGE_OvrVIEW_bms_can(&master_data.status6, RxData, RxHeader.DataLength);
-            count_BMS++;
-            break;
-
-        case 0x1FF820:
-            Unpack_BAT_GAUGE_ViT_bms_can(&master_data.status7, RxData, RxHeader.DataLength);
-            count_BMS++;
-            break;
-
-//        case 0x22:
-//
-//             int16_t roll_rad = (RxData[0]<<8 ) | RxData[1];
-//             int16_t pitch_rad= (RxData[2]<<8)| RxData[3];
-//             int16_t yaw_rad = (RxData[4]<<8 )| RxData[5];
-//
-//              if((roll_rad>=0 && roll_rad<=23040) ||(pitch_rad>=0 && pitch_rad<=23040) || (yaw_rad>=0 && yaw_rad<=23040)){
-//
-//             angles.roll= (roll_rad * 0.0078f);
-//             angles.pitch= (pitch_rad * 0.0078f);
-//             angles.yaw = (yaw_rad * 0.0078f);
-//
-//              }
-//              else if((roll_rad>=42496 && roll_rad<=65536) ||(pitch_rad>=42496 && pitch_rad<=65536) || (yaw_rad>=42496 && yaw_rad<=65536)){
-//
-//             angles.roll= (roll_rad - 65536)*0.0078;
-//             angles.pitch= (pitch_rad - 65536)*0.0078;
-//             angles.yaw = (yaw_rad - 65536)*0.0078;
-//
-//              }
-//             angles.timestamp = HAL_GetTick();
-//             count_IMU++;
-//             break;
-//
-//        case 0x34:
-//             int16_t accX = (RxData[0] << 8) | RxData[1];
-//             int16_t accY = (RxData[2] << 8) | RxData[3];
-//             int16_t accZ = (RxData[4] << 8) | RxData[5];
-//
-//
-//             angles.accx = accX * 0.0039;
-//             angles.accy = accY * 0.0039;
-//             angles.accz = accZ * 0.0039;
-//
-//             angles.timestamp = HAL_GetTick();
-//             count_IMU++;
-//             break;
-
+        case 0x22:
+        case 0x34:
 		case 0x11:
-		    angles.roll = bytesToFloat(&RxData[4]);
-		    angles.pitch = bytesToFloat(&RxData[0]);
-		    angles.timestamp = HAL_GetTick();
-		    count_IMU++;
-            break;
-
 	    case 0x12:
-		    angles.yaw = bytesToFloat(&RxData[0]);
-		    float ACCY= bytesToFloat(&RxData[4]);
-		    angles.accy = ACCY * (-9.81);
-		    angles.timestamp = HAL_GetTick();
-		    count_IMU++;
-		    break;
-
 		case 0x13:
-		    float ACCX=bytesToFloat(&RxData[0]);
-		    angles.accx = ACCX * 9.81;
-		    float ACCZ=bytesToFloat(&RxData[4]);
-		    angles.accz = ACCZ * 9.81;
-		    angles.timestamp = HAL_GetTick();
-		    count_IMU++;
-		    break;
-		}
 
-	    if (count_BMS >= 8)
-	    {
-	        memcpy(Buffer, &master_data, TOTAL_BUFFER_SIZE);
-	        Nextmessage = true;
-	        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_1);
-	        count_BMS = 0;
+			Handleimumessage(RxHeader.Identifier, RxData);
+			break;
 	    }
-        if (count_IMU >= 3){
-
-            last_angles = angles;
-		    Newmessage = true;
-	        HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-		    count_IMU = 0;
-	   }
 	}
-}
-void sendbmsdata(void)
-{
-    if (Nextmessage && getSn_SR(TCP_SOCKET) == SOCK_ESTABLISHED)
-    {
-        int32_t sent = send(TCP_SOCKET, Buffer, TOTAL_BUFFER_SIZE);
-
-        if (sent == TOTAL_BUFFER_SIZE)
-        {
-            HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
-            Nextmessage = false;
-        }
-        else
-        {
-            disconnect(TCP_SOCKET);
-        }
-    }
-}
-void sendimudata() {
-
-	uint32_t now = __HAL_TIM_GET_COUNTER(&htim2);
-    if (Newmessage) {
-
-        if (buffer_index < MAX_MESSAGES) {
-            memcpy(&txBuffer[buffer_index], (void*)&last_angles, sizeof(EulerAngles));
-            buffer_index++;
-        }
-
-        if (buffer_index >= MAX_MESSAGES) {
-            total_size = buffer_index * sizeof(EulerAngles);
-            memcpy(large_buffer, txBuffer, total_size);
-
-        if (now - last_imu_time >= 1 && getSn_SR(TCP_SOCKET) == SOCK_ESTABLISHED) {
-            int32_t sent = send(TCP_SOCKET, large_buffer, total_size);
-
-        if (sent > 0) {
-           	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
-           	last_imu_time = now;
-           	uint16_t rec = getSn_RX_RSR(TCP_SOCKET);
-        if(rec >=2){
-           	recv(TCP_SOCKET,accept,sizeof(accept));
-           	}
-           }
-         }
-            buffer_index = 0;
-        }
-            Newmessage = false;
-    }
 
 }
 /* USER CODE END 0 */
@@ -449,7 +157,6 @@ int main(void)
  W5500_Init();
  wizchip_setnetinfo(&netInfo);
 
-#ifdef  Client
  uint8_t SOCKET = socket(TCP_SOCKET,Sn_MR_TCP,LOCAL_PORT,0);
  if(SOCKET == TCP_SOCKET){
 
@@ -460,15 +167,12 @@ int main(void)
 	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0,GPIO_PIN_SET);
 
 }
-#endif
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-#ifdef Client
-
 	  switch (getSn_SR(TCP_SOCKET)) {
 	          case SOCK_ESTABLISHED:
 	              if (getSn_IR(TCP_SOCKET) & Sn_IR_CON) {
@@ -519,7 +223,6 @@ int main(void)
 	          disconnect(TCP_SOCKET);
 
 	      }
-#endif
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -603,7 +306,7 @@ static void MX_FDCAN1_Init(void)
   hfdcan1.Init.DataSyncJumpWidth = 4;
   hfdcan1.Init.DataTimeSeg1 = 5;
   hfdcan1.Init.DataTimeSeg2 = 5;
-  hfdcan1.Init.StdFiltersNbr = 2;
+  hfdcan1.Init.StdFiltersNbr = 3;
   hfdcan1.Init.ExtFiltersNbr = 4;
   hfdcan1.Init.TxFifoQueueMode = FDCAN_TX_FIFO_OPERATION;
   if (HAL_FDCAN_Init(&hfdcan1) != HAL_OK)
@@ -614,49 +317,71 @@ static void MX_FDCAN1_Init(void)
   FDCAN_FilterTypeDef s;
 
         s.FilterConfig = FDCAN_FILTER_TO_RXFIFO0 ;
-        s.FilterType = FDCAN_STANDARD_ID ;
-        s.IdType= FDCAN_FILTER_DUAL;
-
+        s.FilterType = FDCAN_FILTER_DUAL ;
+        s.IdType= FDCAN_STANDARD_ID;
         s.FilterID1 = 0x110;
         s.FilterID2 = 0x11;
         s.FilterIndex = 0;
+    if(HAL_FDCAN_ConfigFilter(&hfdcan1,&s)!= HAL_OK){
 
+         Error_Handler();
+
+        }
         s.FilterID1 = 0x12;
         s.FilterID2 = 0x13;
         s.FilterIndex = 1;
-
-
 
     if(HAL_FDCAN_ConfigFilter(&hfdcan1,&s)!= HAL_OK){
 
       	 Error_Handler();
         }
+        s.FilterID1 = 0x22;
+        s.FilterID2 = 0x34;
+        s.FilterIndex = 2;
 
+    if(HAL_FDCAN_ConfigFilter(&hfdcan1,&s)!= HAL_OK){
+
+  	     Error_Handler();
+        }
   FDCAN_FilterTypeDef Filterconfigure;
 
         Filterconfigure.FilterConfig = FDCAN_FILTER_TO_RXFIFO0 ;
-        Filterconfigure.FilterType = FDCAN_EXTENDED_ID ;
-        Filterconfigure.IdType= FDCAN_FILTER_DUAL;
-
+        Filterconfigure.FilterType = FDCAN_FILTER_DUAL;
+        Filterconfigure.IdType= FDCAN_EXTENDED_ID;
+        Filterconfigure.FilterIndex = 0;
         Filterconfigure.FilterID1 = 0x1FF310;
         Filterconfigure.FilterID2 = 0x1FF310;
-        Filterconfigure.FilterIndex = 0;
+     if(HAL_FDCAN_ConfigFilter(&hfdcan1,&Filterconfigure)!= HAL_OK){
 
+         Error_Handler();
+
+        }
+
+        Filterconfigure.FilterIndex = 1;
         Filterconfigure.FilterID1 = 0x1FF615;
         Filterconfigure.FilterID2 = 0x1FF110;
-        Filterconfigure.FilterIndex = 1;
+     if(HAL_FDCAN_ConfigFilter(&hfdcan1,&Filterconfigure)!= HAL_OK){
 
+         Error_Handler();
+
+        }
+
+        Filterconfigure.FilterIndex = 2;
         Filterconfigure.FilterID1 = 0x1FF611;
         Filterconfigure.FilterID2 = 0x1FF612;
-        Filterconfigure.FilterIndex = 2;
+     if(HAL_FDCAN_ConfigFilter(&hfdcan1,&Filterconfigure)!= HAL_OK){
 
+         Error_Handler();
+
+        }
+
+        Filterconfigure.FilterIndex = 3;
         Filterconfigure.FilterID1 = 0x1FF810;
         Filterconfigure.FilterID2 = 0x1FF820;
-        Filterconfigure.FilterIndex = 3;
-
-    if(HAL_FDCAN_ConfigFilter(&hfdcan1,&Filterconfigure)!= HAL_OK){
+     if(HAL_FDCAN_ConfigFilter(&hfdcan1,&Filterconfigure)!= HAL_OK){
 
       	 Error_Handler();
+
         }
   /* USER CODE END FDCAN1_Init 2 */
 

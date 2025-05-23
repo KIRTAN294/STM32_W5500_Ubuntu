@@ -31,7 +31,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim_ex.h \
  ../Core/Inc/socket.h ../Core/Inc/wizchip_conf.h ../Core/Inc/w5500.h \
  ../Core/Inc/bms_can.h ../Core/Inc/bms_can-config.h \
- ../Core/Inc/dbccodeconf.h
+ ../Core/Inc/dbccodeconf.h ../Core/Inc/tcp_server.h \
+ ../Core/Inc/Imu_handler.h ../Core/Inc/Bms_handler.h ../Core/Inc/main.h
 ../Core/Inc/main.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal.h:
 ../Core/Inc/stm32g4xx_hal_conf.h:
@@ -69,3 +70,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/bms_can.h:
 ../Core/Inc/bms_can-config.h:
 ../Core/Inc/dbccodeconf.h:
+../Core/Inc/tcp_server.h:
+../Core/Inc/Imu_handler.h:
+../Core/Inc/Bms_handler.h:
+../Core/Inc/main.h:

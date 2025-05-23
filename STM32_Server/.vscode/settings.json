@@ -5,6 +5,14 @@
         "errno.h": "c",
         "tcp.h": "c",
         "stdio.h": "c",
-        "sched.h": "c"
+        "sched.h": "c",
+        "syscall.h": "c",
+        "unistd.h": "c",
+        "in.h": "c",
+        "stdint.h": "c",
+        "bms_can-config.h": "c",
+        "string.h": "c",
+        "socket.h": "c",
+        "dbccodeconf.h": "c"
     }
 }

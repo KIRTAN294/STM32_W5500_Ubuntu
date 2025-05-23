@@ -31,7 +31,12 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include<stdio.h>
+#include"socket.h"
+#include<string.h>
+#include<stdbool.h>
+#include <stdint.h>
+#include "bms_can.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -63,7 +68,13 @@ void Error_Handler(void);
 #define CS_PIN_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-
+#define TCP_SOCKET    0
+#define LOCAL_PORT    5555
+#define BUFFER_SIZE   28
+#define MAX_MESSAGES (BUFFER_SIZE / sizeof(EulerAngles))
+#define TOTAL_BUFFER_SIZE sizeof(Master_BMS_Data_t)
+#define Send_IMU_Data 1
+#define Send_BMS_Data 2
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

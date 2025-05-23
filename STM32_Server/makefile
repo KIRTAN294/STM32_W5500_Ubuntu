@@ -3,7 +3,7 @@ CC = gcc
 CFLAGS = -Wall -IInc
 
 # Source files
-SRCS = Src/IMU_BMS_Deserialization.c Src/bms_can.c 
+SRCS = Src/IMU_BMS_Deserialization.c Src/bms_can.c Src/Imu_handler.c Src/Bms_handler.c Src/tcp_server.c
 
 # Output executable name
 TARGET = IMU_BMS_Deserialization
