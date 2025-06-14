@@ -1,64 +1,75 @@
 #include "Imu_handler.h"
 #include "tcp_server.h"
 #include "Bms_handler.h"
-#include  <stdio.h>
-#include  <errno.h>
-#include  <sys/socket.h>
-#include  <unistd.h>
+#include "Pdb_handler.h"
+#include "Input_handler.h"
+#include <stdio.h>
+#include <errno.h>
+#include <stdio.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
-#define Send_IMU_Data 1
-#define Send_BMS_Data 2
+uint16_t Active_port = 6565;
+uint8_t Number;
 
-typedef uint8_t Commandtype;
+int server_fd;
+int nClient;
+Commandtype choice_enum;
 
-void error(const char *msg); 
- 
-int main(int argc, char *argv[]) {
+void error(const char *msg);
 
-   uint16_t port = 6565;
-   int nRet;
+int main(int argc, char *argv[])
+{
+  server_fd = setup_tcp_server(Active_port);
+  nClient = wait_for_client(server_fd);
 
-   int server_fd = setup_tcp_server(port);
-   int nClient = wait_for_client (server_fd);
+  while (1)
+  {
+    Input_Command();
 
-   int choice;
-    printf("Enter command:\n");
-    printf("1 - Request IMU Data\n");
-    printf("2 - Request BMS Data\n");
-    printf("Your choice: ");
-    scanf("%d", &choice);
-    
-    if (choice != Send_IMU_Data && choice != Send_BMS_Data) {
-        error("Invalid choice.\n");
-        return -1;
-    }
-    
-  Commandtype User_Input = (Commandtype)choice;
+    switch (choice_enum)
+    {
 
-   nRet = send(nClient,&User_Input, sizeof(User_Input), 0);
-    if (nRet != sizeof(User_Input)) {
-       printf("\nFailed to send complete command: sent %d bytes, expected %ld, error: %d\n", 
-              nRet, sizeof(User_Input), errno);
-       return -1;
-    }
-       printf("Request sent to client: %d\n", User_Input);
+    case Request_For_Buzzer:
 
- while(1){
-  
-  if ( choice == Send_IMU_Data)  {
+      printf("Ringing Buzzer times : ");
+      fgets(input, sizeof(input), stdin);
+      sscanf(input, "%hhu", &Number);
+      Command_To_STM(nClient, choice_enum, Number);
+      break;
 
-      Imu_data_receive(nClient);
+    case Request_For_BMS_Data:
 
-    } 
-  else if( choice == Send_BMS_Data) {
-
+      Command_To_STM(nClient, choice_enum, 0);
       Bms_data_receive(nClient);
 
+      break;
+
+    case Request_For_PDB_Data:
+
+      Command_To_STM(nClient, choice_enum, 0);
+      PDB_Data(nClient);
+      break;
+
+    case Request_For_IMU_Data:
+
+      Command_To_STM(nClient, choice_enum, 0);
+      Imu_data_receive(nClient);
+      break;
+
+    case Request_To_Kill:
+    case Request_To_OFF_Front:
+    case Request_To_OFF_Back:
+
+      Command_To_STM(nClient, choice_enum, 0);
+      sleep(1);
+      break;
     }
   }
-close(nClient);
-close(server_fd);
-return 0;
+  close(nClient);
+  close(server_fd);
+  return 0;
 }
-
-

@@ -1,0 +1,7 @@
+/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build/CMakeFiles/IMU_BMS_Deserilaiization.dir
+/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build/CMakeFiles/edit_cache.dir
+/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build/CMakeFiles/rebuild_cache.dir
+/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build/CMakeFiles/list_install_components.dir
+/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build/CMakeFiles/install.dir
+/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build/CMakeFiles/install/local.dir
+/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build/CMakeFiles/install/strip.dir

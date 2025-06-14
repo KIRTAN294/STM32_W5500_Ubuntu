@@ -5,8 +5,6 @@
 #include "bms_can.h"
 #include "dbccodeconf.h"
 
-// #define  MAX_BUFF  32
-
 typedef struct{
 
   uint32_t can_id;

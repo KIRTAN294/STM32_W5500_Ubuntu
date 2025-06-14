@@ -19,8 +19,4 @@ extern EulerAngles angles;
 
 int Imu_data_receive(int Client);
 
-
-
-
-
 #endif

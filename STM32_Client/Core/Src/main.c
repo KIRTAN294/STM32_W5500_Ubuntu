@@ -44,15 +44,15 @@
 /* Private variables ---------------------------------------------------------*/
 FDCAN_HandleTypeDef hfdcan1;
 
-SPI_HandleTypeDef hspi2;
-DMA_HandleTypeDef hdma_spi2_rx;
-DMA_HandleTypeDef hdma_spi2_tx;
+SPI_HandleTypeDef hspi1;
+DMA_HandleTypeDef hdma_spi1_rx;
+DMA_HandleTypeDef hdma_spi1_tx;
 
-TIM_HandleTypeDef htim2;
+TIM_HandleTypeDef htim3;
 
 /* USER CODE BEGIN PV */
-uint8_t S_ADDR[4] = {176,162,10,2};
-uint16_t S_PORT = 6565;
+//uint8_t S_ADDR[4] = {176,162,10,2};
+//uint16_t S_PORT = 6565;
 uint8_t RxData[8];
 FDCAN_RxHeaderTypeDef RxHeader;
 bool Newmessage1= false;
@@ -65,8 +65,8 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_FDCAN1_Init(void);
-static void MX_SPI2_Init(void);
-static void MX_TIM2_Init(void);
+static void MX_TIM3_Init(void);
+static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -74,39 +74,55 @@ static void MX_TIM2_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+typedef void (*CAN_HandlerFunc)(uint32_t id, uint8_t* data, uint8_t dlc);
+
+typedef struct {
+    uint32_t can_id;
+    CAN_HandlerFunc handler;
+} CAN_ID_HandlerMap;
+
+void Handlebmsmessage_wrapper(uint32_t id, uint8_t* data, uint8_t dlc) {
+    Handlebmsmessage(id, data, dlc);
+}
+
+void Handleimumessage_wrapper(uint32_t id, uint8_t* data, uint8_t dlc) {
+    Handleimumessage(id, data);
+}
+
+const CAN_ID_HandlerMap can_handlers[] = {
+    {APP_flag_error_CANID,                Handlebmsmessage_wrapper},
+    {BAT_BMS_IntTemp_CANID,              Handlebmsmessage_wrapper},
+    {BAT_BMS_ExtTemp_CANID,              Handlebmsmessage_wrapper},
+    {BAT_AFE_Fet_Status_CANID,           Handlebmsmessage_wrapper},
+    {BAT_BMS_Charger_Load_Status_CANID,  Handlebmsmessage_wrapper},
+    {BMS_Temp_Sensor_Present_CANID,      Handlebmsmessage_wrapper},
+    {BAT_GAUGE_OvrVIEW_CANID,            Handlebmsmessage_wrapper},
+    {BAT_GAUGE_ViT_CANID,                Handlebmsmessage_wrapper},
+    {0x22,                                Handleimumessage_wrapper},
+    {0x34,                                Handleimumessage_wrapper},
+    {0x11,                                Handleimumessage_wrapper},
+    {0x12,                                Handleimumessage_wrapper},
+    {0x13,                                Handleimumessage_wrapper},
+};
+
 typedef uint8_t Commandtype;
 Commandtype received_cmd;
 
 void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs){
 
-	if(HAL_FDCAN_GetRxMessage(hfdcan,FDCAN_RX_FIFO0,&RxHeader,RxData)== HAL_OK){
+    if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK) {
 
+        uint32_t id = RxHeader.Identifier;
+        uint8_t dlc = RxHeader.DataLength;
 
-		switch(RxHeader.Identifier){
+        for (int i = 0; i < sizeof(can_handlers)/sizeof(can_handlers[0]); i++) {
+            if (can_handlers[i].can_id == id) {
+                can_handlers[i].handler(id, RxData, dlc);
+                break;
 
-        case APP_flag_error_CANID:
-        case BAT_BMS_IntTemp_CANID:
-        case BAT_BMS_ExtTemp_CANID:
-        case BAT_AFE_Fet_Status_CANID:
-        case BAT_BMS_Charger_Load_Status_CANID:
-        case BMS_Temp_Sensor_Present_CANID:
-        case BAT_GAUGE_OvrVIEW_CANID:
-        case BAT_GAUGE_ViT_CANID:
-
-        	Handlebmsmessage(RxHeader.Identifier, RxData, RxHeader.DataLength);
-            break;
-
-        case 0x22:
-        case 0x34:
-		case 0x11:
-	    case 0x12:
-		case 0x13:
-
-			Handleimumessage(RxHeader.Identifier, RxData);
-			break;
-	    }
-	}
-
+            }
+        }
+    }
 }
 /* USER CODE END 0 */
 
@@ -141,22 +157,19 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_FDCAN1_Init();
-  MX_SPI2_Init();
-  MX_TIM2_Init();
+  MX_TIM3_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start_IT(&htim2);
-  if(HAL_FDCAN_Start(&hfdcan1)!= HAL_OK){
+  HAL_TIM_Base_Start_IT(&htim3);
 
-	  Error_Handler();
+  if(HAL_FDCAN_Start(&hfdcan1)!= HAL_OK) Error_Handler();
 
-  }
-  if (HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK) {
-         Error_Handler();
-     }
+  if(HAL_FDCAN_ActivateNotification(&hfdcan1, FDCAN_IT_RX_FIFO0_NEW_MESSAGE, 0) != HAL_OK)  Error_Handler();
 
  W5500_Init();
  wizchip_setnetinfo(&netInfo);
 
+// tcp_server_host();
  uint8_t SOCKET = socket(TCP_SOCKET,Sn_MR_TCP,LOCAL_PORT,0);
  if(SOCKET == TCP_SOCKET){
 
@@ -165,6 +178,7 @@ int main(void)
 	  setSn_MR(TCP_SOCKET, mode);
 	  connect(TCP_SOCKET, S_ADDR, S_PORT);
 	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0,GPIO_PIN_SET);
+
 
 }
   /* USER CODE END 2 */
@@ -227,6 +241,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
   }
+//    HAL_Delay(50);
   /* USER CODE END 3 */
 }
 
@@ -388,87 +403,87 @@ static void MX_FDCAN1_Init(void)
 }
 
 /**
-  * @brief SPI2 Initialization Function
+  * @brief SPI1 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_SPI2_Init(void)
+static void MX_SPI1_Init(void)
 {
 
-  /* USER CODE BEGIN SPI2_Init 0 */
+  /* USER CODE BEGIN SPI1_Init 0 */
 
-  /* USER CODE END SPI2_Init 0 */
+  /* USER CODE END SPI1_Init 0 */
 
-  /* USER CODE BEGIN SPI2_Init 1 */
+  /* USER CODE BEGIN SPI1_Init 1 */
 
-  /* USER CODE END SPI2_Init 1 */
-  /* SPI2 parameter configuration*/
-  hspi2.Instance = SPI2;
-  hspi2.Init.Mode = SPI_MODE_MASTER;
-  hspi2.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi2.Init.NSS = SPI_NSS_SOFT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
-  hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
-  hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi2.Init.CRCPolynomial = 7;
-  hspi2.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-  hspi2.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
-  if (HAL_SPI_Init(&hspi2) != HAL_OK)
+  /* USER CODE END SPI1_Init 1 */
+  /* SPI1 parameter configuration*/
+  hspi1.Instance = SPI1;
+  hspi1.Init.Mode = SPI_MODE_MASTER;
+  hspi1.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi1.Init.NSS = SPI_NSS_SOFT;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
+  hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
+  hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
+  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi1.Init.CRCPolynomial = 7;
+  hspi1.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
+  hspi1.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+  if (HAL_SPI_Init(&hspi1) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN SPI2_Init 2 */
+  /* USER CODE BEGIN SPI1_Init 2 */
 
-  /* USER CODE END SPI2_Init 2 */
+  /* USER CODE END SPI1_Init 2 */
 
 }
 
 /**
-  * @brief TIM2 Initialization Function
+  * @brief TIM3 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_TIM2_Init(void)
+static void MX_TIM3_Init(void)
 {
 
-  /* USER CODE BEGIN TIM2_Init 0 */
+  /* USER CODE BEGIN TIM3_Init 0 */
 
-  /* USER CODE END TIM2_Init 0 */
+  /* USER CODE END TIM3_Init 0 */
 
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
 
-  /* USER CODE BEGIN TIM2_Init 1 */
+  /* USER CODE BEGIN TIM3_Init 1 */
 
-  /* USER CODE END TIM2_Init 1 */
-  htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 159;
-  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 999;
-  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  /* USER CODE END TIM3_Init 1 */
+  htim3.Instance = TIM3;
+  htim3.Init.Prescaler = 159;
+  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim3.Init.Period = 999;
+  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
   {
     Error_Handler();
   }
   sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
   {
     Error_Handler();
   }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN TIM2_Init 2 */
+  /* USER CODE BEGIN TIM3_Init 2 */
 
-  /* USER CODE END TIM2_Init 2 */
+  /* USER CODE END TIM3_Init 2 */
 
 }
 
@@ -510,30 +525,23 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_5|RST_PIN_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(CS_PIN_GPIO_Port, CS_PIN_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : PA0 PA1 PA5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_5;
+  /*Configure GPIO pins : PA0 PA1 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : RST_PIN_Pin */
-  GPIO_InitStruct.Pin = RST_PIN_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-  HAL_GPIO_Init(RST_PIN_GPIO_Port, &GPIO_InitStruct);
-
   /*Configure GPIO pin : CS_PIN_Pin */
   GPIO_InitStruct.Pin = CS_PIN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(CS_PIN_GPIO_Port, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */

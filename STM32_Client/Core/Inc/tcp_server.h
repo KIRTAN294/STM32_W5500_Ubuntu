@@ -10,6 +10,9 @@
 
 #include "wizchip_conf.h"
 
+extern uint8_t S_ADDR[4] ;
+extern uint16_t S_PORT;
+
 void W5500_Init(void);
 void W5500_Select(void);
 void W5500_Unselect(void);
@@ -19,6 +22,7 @@ void W5500_ReadBuff(uint8_t *buff , uint16_t len);
 void W5500_WriteBuff(uint8_t *buff ,uint16_t len);
 
 void W5500_Init();
+void tcp_server_host();
 
 extern wiz_NetInfo netInfo;
 #endif /* INC_TCP_SERVER_H_ */

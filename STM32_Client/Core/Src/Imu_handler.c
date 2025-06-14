@@ -8,7 +8,7 @@
 #include "Imu_handler.h"
 #include  "main.h"
 
-extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim3;
 
 
 uint8_t accept[40];
@@ -32,7 +32,7 @@ float bytesToFloat(uint8_t *bytes) {
 
 void Handleimumessage(uint32_t can_id, uint8_t *RxData){
 
-    Imu_message = true;
+
 
 	switch(can_id){
 
@@ -90,10 +90,11 @@ void Handleimumessage(uint32_t can_id, uint8_t *RxData){
 
 	angles.timestamp = HAL_GetTick();
     last_angles = angles;
+    Imu_message = true;
 }
 void sendimudata(void) {
 
-	uint32_t now = __HAL_TIM_GET_COUNTER(&htim2);
+	uint32_t now = __HAL_TIM_GET_COUNTER(&htim3);
     if (Imu_message) {
 
         if (buffer_index < MAX_MESSAGES) {

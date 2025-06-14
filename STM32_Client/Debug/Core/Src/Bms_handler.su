@@ -1,2 +1,2 @@
-../Core/Src/Bms_handler.c:16:6:Handlebmsmessage	24	static
-../Core/Src/Bms_handler.c:82:6:sendbmsdata	16	static
+../Core/Src/Bms_handler.c:36:6:Handlebmsmessage	24	static
+../Core/Src/Bms_handler.c:102:6:sendbmsdata	16	static

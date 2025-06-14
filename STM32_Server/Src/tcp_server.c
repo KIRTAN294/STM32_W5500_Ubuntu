@@ -17,7 +17,7 @@ static void error(const char *msg){
     exit(-1);
 }
 
-int setup_tcp_server(uint16_t port){
+int setup_tcp_server(uint16_t Active_port){
 
    int server_fd;
   server_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -28,10 +28,16 @@ int setup_tcp_server(uint16_t port){
   struct sockaddr_in server_add = {
     .sin_family = AF_INET,
     .sin_addr.s_addr = INADDR_ANY,
-    .sin_port = htons(port)
+    .sin_port = htons(Active_port)
     };   
 
     memset(&(server_add.sin_zero),0,8);
+    
+    int opt = 1;
+      if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+       error("setsockopt(SO_REUSEADDR) failed");
+       exit(1);
+     }
 
      if (bind(server_fd, (struct sockaddr *) &server_add, sizeof(server_add)) < 0) {
         error("ERROR on binding\n");

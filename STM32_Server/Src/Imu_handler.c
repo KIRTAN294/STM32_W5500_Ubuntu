@@ -8,9 +8,9 @@
 #include <errno.h>
 #include <sys/socket.h>
 
-#define BUFFER_SIZE  28
-#define MAX_MESSAGES (BUFFER_SIZE/ sizeof(EulerAngles))
-unsigned char buffer[BUFFER_SIZE] = {0};
+#define BUFFER_IMU_SIZE  28
+#define MAX_MESSAGES (BUFFER_IMU_SIZE/ sizeof(EulerAngles))
+unsigned char buffer[BUFFER_IMU_SIZE] = {0};
 int total_received = 0;
 
 EulerAngles angles;
@@ -24,7 +24,7 @@ int Imu_data_receive(int nClient){
    int nRet; 
      while (1){
       
-      printf("Running on CPU %d\n", sched_getcpu());
+      // printf("Running on CPU %d\n", sched_getcpu());
 
       nRet = recv(nClient, buffer+total_received, sizeof(buffer)-total_received, 0);
       if (nRet == 0) {

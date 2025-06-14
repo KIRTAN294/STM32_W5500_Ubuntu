@@ -1,6 +1,7 @@
 "./Core/Src/Bms_handler.o"
 "./Core/Src/Imu_handler.o"
 "./Core/Src/bms_can.o"
+"./Core/Src/dhcp.o"
 "./Core/Src/main.o"
 "./Core/Src/socket.o"
 "./Core/Src/stm32g4xx_hal_msp.o"

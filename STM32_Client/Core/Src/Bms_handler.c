@@ -13,6 +13,26 @@ bool Bms_message = false;
 Master_BMS_Data_t master_data;
 Ethernet_BMS_Packet eth_msg = {0};
 
+//BMS_handle bms_data[] = {
+//    {APP_flag_error_CANID, Unpack_APP_flag_error_bms_can, &master_data.status, sizeof(master_data.status)},
+//    {BAT_BMS_IntTemp_CANID, Unpack_BAT_BMS_IntTemp_bms_can, &master_data.status1, sizeof(master_data.status1)},
+//    {BAT_BMS_ExtTemp_CANID, Unpack_BAT_BMS_ExtTemp_bms_can, &master_data.status2, sizeof(master_data.status2)},
+//    {BAT_AFE_Fet_Status_CANID, Unpack_BAT_AFE_Fet_Status_bms_can, &master_data.status3, sizeof(master_data.status3)},
+//    {BAT_BMS_Charger_Load_Status_CANID, Unpack_BAT_BMS_Charger_Load_Status_bms_can, &master_data.status4, sizeof(master_data.status4)},
+//    {BMS_Temp_Sensor_Present_CANID, Unpack_BMS_Temp_Sensor_Present_bms_can, &master_data.status5, sizeof(master_data.status5)},
+//    {BAT_GAUGE_OvrVIEW_CANID, Unpack_BAT_GAUGE_OvrVIEW_bms_can, &master_data.status6, sizeof(master_data.status6)},
+//    {BAT_GAUGE_ViT_CANID, Unpack_BAT_GAUGE_ViT_bms_can, &master_data.status7, sizeof(master_data.status7)},
+//};
+//
+//
+//void Handlebmsmessage(uint32_t can_id, uint8_t *RxData, uint8_t length){
+//
+//	Bms_message = true;
+//
+//
+//
+//}
+
 void Handlebmsmessage(uint32_t can_id, uint8_t *RxData, uint8_t length){
 
 	Bms_message = true;

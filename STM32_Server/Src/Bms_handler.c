@@ -10,6 +10,7 @@
 
 Ethernet_BMS_Packet eth_msg;
 Struct_A master_data;
+
 int Bms_data_receive(int nClient){
 
     int nRet;
@@ -26,13 +27,9 @@ int Bms_data_receive(int nClient){
             break;
             }
             if (nRet < 0) {
-                
-              if (nRet < 0) {
-               printf("Receive  error:");
-               break;
-              }
-               continue;
-            }  
+             perror("Receive error"); 
+            break;
+} 
          total_received += nRet;     
     }
     if (total_received >= TOTAL_SIZE) {

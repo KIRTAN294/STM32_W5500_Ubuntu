@@ -13,6 +13,8 @@
         "bms_can-config.h": "c",
         "string.h": "c",
         "socket.h": "c",
-        "dbccodeconf.h": "c"
+        "dbccodeconf.h": "c",
+        "fstream": "c",
+        "ctype.h": "c"
     }
 }

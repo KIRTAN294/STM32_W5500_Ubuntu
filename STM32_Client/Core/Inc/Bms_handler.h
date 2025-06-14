@@ -12,6 +12,15 @@
 
 extern bool Bms_message;
 
+//typedef struct{
+//
+//	uint8_t can_id;
+//	uint32_t (*Unpack_func)(Master_BMS_Data_t* _m, const uint8_t* data, uint8_t dlc);
+//	void *status_struct;
+//	size_t struct_size;
+//
+//}BMS_handle;
+
 typedef struct{
 
 	uint32_t can_id;

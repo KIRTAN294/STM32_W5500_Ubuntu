@@ -1,2 +1,2 @@
-../Core/Src/Bms_handler.c:16:6:Handlebmsmessage	15
-../Core/Src/Bms_handler.c:82:6:sendbmsdata	4
+../Core/Src/Bms_handler.c:36:6:Handlebmsmessage	15
+../Core/Src/Bms_handler.c:102:6:sendbmsdata	4
