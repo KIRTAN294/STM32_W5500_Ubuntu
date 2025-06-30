@@ -11,7 +11,7 @@
 #define BUFFER_SIZE (NUM_Flotes * sizeof(float))
 
 
-int PDB_Data(int nClient)
+int PDB_Data(int server_fd)
 {
   
   while (1)
@@ -19,7 +19,7 @@ int PDB_Data(int nClient)
     uint8_t buffer[BUFFER_SIZE];
     float values[NUM_Flotes];
 
-    nRet = recv(nClient, buffer, BUFFER_SIZE, 0);
+    nRet = recv(server_fd, buffer, BUFFER_SIZE, 0);
     if (nRet == 0)
     {
       printf("Connection closed by client\n");
@@ -40,5 +40,5 @@ int PDB_Data(int nClient)
       printf("%s: %.2f\n", labels[i], values[i]);
     }
   }
-  return nClient;
+  return server_fd;
 }

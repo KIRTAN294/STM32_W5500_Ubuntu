@@ -4,8 +4,6 @@
 #include <stdint.h>
 
 
-int setup_tcp_server(uint16_t Active_port);
-int wait_for_client (int server_fd);
-
+int setup_tcp_client(const char *server_ip,int16_t Active_port);
 
 #endif

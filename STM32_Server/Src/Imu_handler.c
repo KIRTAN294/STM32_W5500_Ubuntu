@@ -19,14 +19,14 @@ static void error(const char *msg){
     perror(msg);
     exit(-1);
 }
-int Imu_data_receive(int nClient){
+int Imu_data_receive(int server_fd){
   
    int nRet; 
      while (1){
       
       // printf("Running on CPU %d\n", sched_getcpu());
 
-      nRet = recv(nClient, buffer+total_received, sizeof(buffer)-total_received, 0);
+      nRet = recv(server_fd, buffer+total_received, sizeof(buffer)-total_received, 0);
       if (nRet == 0) {
           printf("Connection closed by client\n");
           break;
@@ -39,7 +39,7 @@ int Imu_data_receive(int nClient){
 
       if (nRet > 0) {
           total_received += nRet;
-          send(nClient, "OK", 2, 0);
+          send(server_fd, "OK", 2, 0);
           int complete_messages = total_received / sizeof(EulerAngles);
 
       for (int i = 0; i < complete_messages; i++) {
@@ -67,5 +67,5 @@ int Imu_data_receive(int nClient){
     }
   }
 
-   return nClient;
+   return server_fd;
 }

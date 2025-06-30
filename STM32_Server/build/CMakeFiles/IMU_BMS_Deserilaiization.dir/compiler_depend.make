@@ -576,6 +576,7 @@ CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.o: ../Src/tcp_server.c 
   /usr/include/netinet/in.h \
   /usr/include/x86_64-linux-gnu/bits/in.h \
   /usr/include/netinet/tcp.h \
+  /usr/include/arpa/inet.h \
   /usr/include/errno.h \
   /usr/include/x86_64-linux-gnu/bits/errno.h \
   /usr/include/linux/errno.h \
@@ -641,6 +642,8 @@ CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.o: ../Src/tcp_server.c 
 /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h:
 
 /usr/include/asm-generic/sockios.h:
+
+/usr/include/arpa/inet.h:
 
 /usr/include/x86_64-linux-gnu/asm/posix_types.h:
 

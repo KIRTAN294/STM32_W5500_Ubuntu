@@ -45,7 +45,7 @@ void Input_Command(void)
     }
 }
 
-void Command_To_STM(int nClient, Commandtype choice_enum, uint8_t Numtimes)
+void Command_To_STM(int server_fd, Commandtype choice_enum, uint8_t Numtimes)
 {
 
     typedef struct
@@ -59,7 +59,7 @@ void Command_To_STM(int nClient, Commandtype choice_enum, uint8_t Numtimes)
     Packet.cmd = choice_enum;
     Packet.Number = Numtimes;
 
-    nRet = send(nClient, &Packet, sizeof(Packet), 0);
+    nRet = send(server_fd, &Packet, sizeof(Packet), 0);
     if (nRet != sizeof(Packet))
     {
         printf("\nFailed to send complete command: sent %d bytes, expected %lu, error: %d\n",

@@ -11,7 +11,7 @@
 Ethernet_BMS_Packet eth_msg;
 Struct_A master_data;
 
-int Bms_data_receive(int nClient){
+int Bms_data_receive(int server_fd){
 
     int nRet;
 
@@ -21,7 +21,7 @@ int Bms_data_receive(int nClient){
 
     while (total_received < TOTAL_SIZE)
     {
-        nRet = recv(nClient, ((uint8_t*)&eth_msg) +total_received, TOTAL_SIZE - total_received, 0);
+        nRet = recv(server_fd, ((uint8_t*)&eth_msg) +total_received, TOTAL_SIZE - total_received, 0);
         if (nRet == 0) {
             printf("Connection closed by client\n");
             break;
@@ -142,5 +142,5 @@ int Bms_data_receive(int nClient){
             printf("\n");
   }  
   
-  return nClient;
+  return server_fd;
 }
