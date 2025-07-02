@@ -1,4 +1,4 @@
-#include "tcp_server.h"
+#include "tcp_client.h"
 #include <string.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -20,12 +20,12 @@ static void error(const char *msg)
 
 int setup_tcp_client(const char *server_ip,int16_t Active_port)
 {
+  int TCP_client_fd;
 
-  int server_fd;
-  server_fd = socket(AF_INET, SOCK_STREAM, 0);
-  if (server_fd < 0)
+  TCP_client_fd = socket(AF_INET, SOCK_STREAM, 0);
+  if (TCP_client_fd < 0)
   {
-    error("ERROR opening socket\n");
+    error("ERROR opening in TCP socket\n");
   }
 
   struct sockaddr_in server_add = {
@@ -35,12 +35,12 @@ int setup_tcp_client(const char *server_ip,int16_t Active_port)
 
   memset(&(server_add.sin_zero), 0, 8);
 
-  int C = connect(server_fd, (struct sockaddr *)&server_add, sizeof(server_add));
-  if (C == -1)
+    int T = connect(TCP_client_fd, (struct sockaddr *)&server_add, sizeof(server_add));
+  if (T == -1)
   {
-    error("Connction is not established");
+    error("TCP Connction is not established");
   }
 
-  return server_fd;
+  return TCP_client_fd;
 }
 

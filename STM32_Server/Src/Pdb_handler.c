@@ -1,4 +1,5 @@
 #include "Pdb_handler.h"
+#include "udp_client.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -11,21 +12,20 @@
 #define BUFFER_SIZE (NUM_Flotes * sizeof(float))
 
 
-int PDB_Data(int server_fd)
+int PDB_Data(int UDP_client_fd)
 {
   
   while (1)
   {
     uint8_t buffer[BUFFER_SIZE];
-    float values[NUM_Flotes];
-
-    nRet = recv(server_fd, buffer, BUFFER_SIZE, 0);
+    float values[NUM_Flotes]; 
+    
+    nRet = recvfrom(UDP_client_fd, buffer, BUFFER_SIZE, 0,NULL, NULL);
     if (nRet == 0)
     {
       printf("Connection closed by client\n");
       return -1;
     }
-
     memcpy(values, buffer, BUFFER_SIZE);
 
     const char *labels[NUM_Flotes] = {
@@ -40,5 +40,5 @@ int PDB_Data(int server_fd)
       printf("%s: %.2f\n", labels[i], values[i]);
     }
   }
-  return server_fd;
+  return UDP_client_fd;
 }

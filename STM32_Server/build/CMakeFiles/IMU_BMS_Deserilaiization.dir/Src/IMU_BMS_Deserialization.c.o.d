@@ -17,30 +17,16 @@ CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/IMU_BMS_Deserialization.c.o: \
  /usr/include/x86_64-linux-gnu/bits/wchar.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc/tcp_server.h \
- /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc/Bms_handler.h \
- /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc/bms_can-config.h \
- /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc/dbccodeconf.h \
- /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc/bms_can.h \
- /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc/Pdb_handler.h \
- /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc/Input_handler.h \
- /usr/include/stdio.h /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
- /usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h \
- /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h \
- /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
- /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h \
- /usr/include/x86_64-linux-gnu/bits/types/__FILE.h \
- /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h \
- /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+ /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc/tcp_client.h \
+ /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc/udp_client.h \
+ /usr/include/string.h /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
+ /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
+ /usr/include/strings.h /usr/include/stdlib.h \
+ /usr/include/x86_64-linux-gnu/bits/waitflags.h \
+ /usr/include/x86_64-linux-gnu/bits/waitstatus.h \
  /usr/include/x86_64-linux-gnu/bits/floatn.h \
- /usr/include/x86_64-linux-gnu/bits/floatn-common.h /usr/include/errno.h \
- /usr/include/x86_64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
- /usr/include/x86_64-linux-gnu/asm/errno.h \
- /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
- /usr/include/x86_64-linux-gnu/sys/socket.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/include/x86_64-linux-gnu/bits/socket.h \
+ /usr/include/x86_64-linux-gnu/bits/floatn-common.h \
  /usr/include/x86_64-linux-gnu/sys/types.h \
  /usr/include/x86_64-linux-gnu/bits/types/clock_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/clockid_t.h \
@@ -61,7 +47,11 @@ CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/IMU_BMS_Deserialization.c.o: \
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h \
  /usr/include/x86_64-linux-gnu/bits/atomic_wide_counter.h \
  /usr/include/x86_64-linux-gnu/bits/struct_mutex.h \
- /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h \
+ /usr/include/x86_64-linux-gnu/bits/struct_rwlock.h /usr/include/alloca.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
+ /usr/include/x86_64-linux-gnu/sys/socket.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
+ /usr/include/x86_64-linux-gnu/bits/socket.h \
  /usr/include/x86_64-linux-gnu/bits/socket_type.h \
  /usr/include/x86_64-linux-gnu/bits/sockaddr.h \
  /usr/include/x86_64-linux-gnu/asm/socket.h \
@@ -75,15 +65,33 @@ CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/IMU_BMS_Deserialization.c.o: \
  /usr/include/x86_64-linux-gnu/asm/sockios.h \
  /usr/include/asm-generic/sockios.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/unistd.h /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
+ /usr/include/netinet/in.h /usr/include/x86_64-linux-gnu/bits/in.h \
+ /usr/include/netinet/tcp.h /usr/include/arpa/inet.h /usr/include/errno.h \
+ /usr/include/x86_64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
+ /usr/include/x86_64-linux-gnu/asm/errno.h \
+ /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+ /usr/include/sched.h /usr/include/x86_64-linux-gnu/bits/sched.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h \
+ /usr/include/x86_64-linux-gnu/bits/cpu-set.h /usr/include/unistd.h \
+ /usr/include/x86_64-linux-gnu/bits/posix_opt.h \
  /usr/include/x86_64-linux-gnu/bits/environments.h \
  /usr/include/x86_64-linux-gnu/bits/confname.h \
  /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
  /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
- /usr/include/x86_64-linux-gnu/bits/unistd_ext.h /usr/include/stdlib.h \
- /usr/include/x86_64-linux-gnu/bits/waitflags.h \
- /usr/include/x86_64-linux-gnu/bits/waitstatus.h /usr/include/alloca.h \
- /usr/include/x86_64-linux-gnu/bits/stdlib-float.h /usr/include/string.h \
- /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
- /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
- /usr/include/strings.h /usr/include/ctype.h
+ /usr/include/x86_64-linux-gnu/bits/unistd_ext.h /usr/include/stdio.h \
+ /usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+ /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc/Bms_handler.h \
+ /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc/bms_can-config.h \
+ /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc/dbccodeconf.h \
+ /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc/bms_can.h \
+ /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc/tcp_client.h \
+ /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc/Pdb_handler.h \
+ /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc/Input_handler.h \
+ /usr/include/ctype.h

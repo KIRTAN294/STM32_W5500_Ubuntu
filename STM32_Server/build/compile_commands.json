@@ -1,37 +1,42 @@
 [
 {
   "directory": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build",
-  "command": "/usr/bin/cc  -I/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc  -o CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Bms_handler.c.o -c /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/Bms_handler.c",
+  "command": "/usr/bin/cc  -I/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc  -o CMakeFiles/main.dir/Src/Bms_handler.c.o -c /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/Bms_handler.c",
   "file": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/Bms_handler.c"
 },
 {
   "directory": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build",
-  "command": "/usr/bin/cc  -I/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc  -o CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/IMU_BMS_Deserialization.c.o -c /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/IMU_BMS_Deserialization.c",
-  "file": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/IMU_BMS_Deserialization.c"
-},
-{
-  "directory": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build",
-  "command": "/usr/bin/cc  -I/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc  -o CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Imu_handler.c.o -c /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/Imu_handler.c",
+  "command": "/usr/bin/cc  -I/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc  -o CMakeFiles/main.dir/Src/Imu_handler.c.o -c /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/Imu_handler.c",
   "file": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/Imu_handler.c"
 },
 {
   "directory": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build",
-  "command": "/usr/bin/cc  -I/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc  -o CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Input_handler.c.o -c /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/Input_handler.c",
+  "command": "/usr/bin/cc  -I/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc  -o CMakeFiles/main.dir/Src/Input_handler.c.o -c /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/Input_handler.c",
   "file": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/Input_handler.c"
 },
 {
   "directory": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build",
-  "command": "/usr/bin/cc  -I/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc  -o CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Pdb_handler.c.o -c /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/Pdb_handler.c",
+  "command": "/usr/bin/cc  -I/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc  -o CMakeFiles/main.dir/Src/Pdb_handler.c.o -c /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/Pdb_handler.c",
   "file": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/Pdb_handler.c"
 },
 {
   "directory": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build",
-  "command": "/usr/bin/cc  -I/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc  -o CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/bms_can.c.o -c /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/bms_can.c",
+  "command": "/usr/bin/cc  -I/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc  -o CMakeFiles/main.dir/Src/bms_can.c.o -c /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/bms_can.c",
   "file": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/bms_can.c"
 },
 {
   "directory": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build",
-  "command": "/usr/bin/cc  -I/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc  -o CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.o -c /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/tcp_server.c",
-  "file": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/tcp_server.c"
+  "command": "/usr/bin/cc  -I/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc  -o CMakeFiles/main.dir/Src/main.c.o -c /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/main.c",
+  "file": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/main.c"
+},
+{
+  "directory": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build",
+  "command": "/usr/bin/cc  -I/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc  -o CMakeFiles/main.dir/Src/tcp_client.c.o -c /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/tcp_client.c",
+  "file": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/tcp_client.c"
+},
+{
+  "directory": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build",
+  "command": "/usr/bin/cc  -I/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc  -o CMakeFiles/main.dir/Src/udp_client.c.o -c /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/udp_client.c",
+  "file": "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/udp_client.c"
 }
 ]

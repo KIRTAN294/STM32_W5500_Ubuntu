@@ -9,8 +9,8 @@ include_directories(Inc)
 file(GLOB SOURCES "Src/*.c")
 
 # Create the executable
-add_executable(IMU_BMS_Deserilaiization ${SOURCES})
+add_executable(main ${SOURCES})
 
 # Install the executable
-install(TARGETS IMU_BMS_Deserilaiization DESTINATION bin)
+install(TARGETS main DESTINATION bin)
 

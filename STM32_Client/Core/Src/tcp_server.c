@@ -16,8 +16,8 @@ volatile uint8_t spiTxComplete = 1;
 volatile uint8_t spiRxComplete = 1;
 
 uint8_t dhcp_buffer[1024];
-uint8_t S_ADDR[4] = {176,162,10,2};  // IP of PC server
-uint16_t S_PORT = 6565;
+//uint8_t S_ADDR[4] = {176,162,10,2};  // IP of PC server
+//uint16_t S_PORT = 6565;
 wiz_NetInfo netInfo={
 
 		.mac = {0x02, 0x00, 0x00, 0x00, 0x00, 0x01},

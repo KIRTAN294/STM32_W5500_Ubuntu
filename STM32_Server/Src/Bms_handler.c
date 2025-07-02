@@ -1,4 +1,5 @@
 #include "Bms_handler.h"
+#include "udp_client.h"
 #include <stdio.h>
 #include <unistd.h>
 #include <stdint.h>
@@ -11,25 +12,24 @@
 Ethernet_BMS_Packet eth_msg;
 Struct_A master_data;
 
-int Bms_data_receive(int server_fd){
+int Bms_data_receive(int UDP_client_fd){
 
     int nRet;
 
   while (1){
 
     int total_received = 0;
-
+    struct sockaddr_in server_add;
+    socklen_t len = sizeof(server_add);
     while (total_received < TOTAL_SIZE)
-    {
-        nRet = recv(server_fd, ((uint8_t*)&eth_msg) +total_received, TOTAL_SIZE - total_received, 0);
-        if (nRet == 0) {
-            printf("Connection closed by client\n");
+    {  
+        nRet = recvfrom(UDP_client_fd, ((uint8_t*)&eth_msg) +total_received, TOTAL_SIZE - total_received, 0,(struct sockaddr *)&server_add,&len);
+        
+        if (nRet < 0) {
+
+            perror("Receive error"); 
             break;
-            }
-            if (nRet < 0) {
-             perror("Receive error"); 
-            break;
-} 
+           } 
          total_received += nRet;     
     }
     if (total_received >= TOTAL_SIZE) {
@@ -142,5 +142,5 @@ int Bms_data_receive(int server_fd){
             printf("\n");
   }  
   
-  return server_fd;
+  return UDP_client_fd;
 }

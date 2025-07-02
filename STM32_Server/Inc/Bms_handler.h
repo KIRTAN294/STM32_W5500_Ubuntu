@@ -4,6 +4,7 @@
 #include "bms_can-config.h"
 #include "bms_can.h"
 #include "dbccodeconf.h"
+#include "tcp_client.h"
 
 typedef struct{
 
@@ -30,6 +31,6 @@ BAT_GAUGE_ViT_t status7;
 
 extern Struct_A master_data;
 
-int Bms_data_receive(int nClient);
+int Bms_data_receive(int UDP_client_fd);
 
 #endif

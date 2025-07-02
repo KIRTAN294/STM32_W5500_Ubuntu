@@ -63,7 +63,7 @@ CMAKE_BINARY_DIR = /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/IMU_BMS_Deserilaiization.dir/all
+all: CMakeFiles/main.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -71,34 +71,34 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/IMU_BMS_Deserilaiization.dir/clean
+clean: CMakeFiles/main.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/IMU_BMS_Deserilaiization.dir
+# Target rules for target CMakeFiles/main.dir
 
 # All Build rule for target.
-CMakeFiles/IMU_BMS_Deserilaiization.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8 "Built target IMU_BMS_Deserilaiization"
-.PHONY : CMakeFiles/IMU_BMS_Deserilaiization.dir/all
+CMakeFiles/main.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9 "Built target main"
+.PHONY : CMakeFiles/main.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/IMU_BMS_Deserilaiization.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build/CMakeFiles 8
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/IMU_BMS_Deserilaiization.dir/all
+CMakeFiles/main.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build/CMakeFiles 9
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/main.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build/CMakeFiles 0
-.PHONY : CMakeFiles/IMU_BMS_Deserilaiization.dir/rule
+.PHONY : CMakeFiles/main.dir/rule
 
 # Convenience name for target.
-IMU_BMS_Deserilaiization: CMakeFiles/IMU_BMS_Deserilaiization.dir/rule
-.PHONY : IMU_BMS_Deserilaiization
+main: CMakeFiles/main.dir/rule
+.PHONY : main
 
 # clean rule for target.
-CMakeFiles/IMU_BMS_Deserilaiization.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/clean
-.PHONY : CMakeFiles/IMU_BMS_Deserilaiization.dir/clean
+CMakeFiles/main.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/clean
+.PHONY : CMakeFiles/main.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

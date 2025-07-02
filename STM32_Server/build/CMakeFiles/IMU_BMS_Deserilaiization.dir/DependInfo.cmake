@@ -14,7 +14,8 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/Input_handler.c" "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Input_handler.c.o" "gcc" "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Input_handler.c.o.d"
   "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/Pdb_handler.c" "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Pdb_handler.c.o" "gcc" "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Pdb_handler.c.o.d"
   "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/bms_can.c" "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/bms_can.c.o" "gcc" "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/bms_can.c.o.d"
-  "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/tcp_server.c" "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.o" "gcc" "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.o.d"
+  "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/tcp_client.c" "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.o" "gcc" "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.o.d"
+  "/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/udp_client.c" "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.o" "gcc" "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.o.d"
   )
 
 # Targets to which this target links.

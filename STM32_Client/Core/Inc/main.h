@@ -62,16 +62,16 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define CS_PIN_Pin GPIO_PIN_6
-#define CS_PIN_GPIO_Port GPIOB
+#define CS_PIN_Pin GPIO_PIN_4
+#define CS_PIN_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 
 
 
-#define DHCP_SOCKET   0
+#define UDP_SOCKET   0
 #define TCP_SOCKET    1
-#define LOCAL_PORT    5555
+#define LOCAL_PORT    4444
 #define BUFFER_SIZE   28
 #define MAX_MESSAGES (BUFFER_SIZE / sizeof(EulerAngles))
 #define TOTAL_BUFFER_SIZE sizeof(Master_BMS_Data_t)

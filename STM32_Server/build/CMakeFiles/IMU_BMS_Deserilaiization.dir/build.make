@@ -153,19 +153,33 @@ CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/bms_can.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/bms_can.c.s"
 	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/bms_can.c -o CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/bms_can.c.s
 
-CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.o: CMakeFiles/IMU_BMS_Deserilaiization.dir/flags.make
-CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.o: ../Src/tcp_server.c
-CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.o: CMakeFiles/IMU_BMS_Deserilaiization.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.o -MF CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.o.d -o CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.o -c /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/tcp_server.c
+CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.o: CMakeFiles/IMU_BMS_Deserilaiization.dir/flags.make
+CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.o: ../Src/tcp_client.c
+CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.o: CMakeFiles/IMU_BMS_Deserilaiization.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.o -MF CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.o.d -o CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.o -c /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/tcp_client.c
 
-CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/tcp_server.c > CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.i
+CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/tcp_client.c > CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.i
 
-CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/tcp_server.c -o CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.s
+CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/tcp_client.c -o CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.s
+
+CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.o: CMakeFiles/IMU_BMS_Deserilaiization.dir/flags.make
+CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.o: ../Src/udp_client.c
+CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.o: CMakeFiles/IMU_BMS_Deserilaiization.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.o -MF CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.o.d -o CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.o -c /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/udp_client.c
+
+CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.i"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/udp_client.c > CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.i
+
+CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.s"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Src/udp_client.c -o CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.s
 
 # Object files for target IMU_BMS_Deserilaiization
 IMU_BMS_Deserilaiization_OBJECTS = \
@@ -175,7 +189,8 @@ IMU_BMS_Deserilaiization_OBJECTS = \
 "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Input_handler.c.o" \
 "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Pdb_handler.c.o" \
 "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/bms_can.c.o" \
-"CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.o"
+"CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.o" \
+"CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.o"
 
 # External object files for target IMU_BMS_Deserilaiization
 IMU_BMS_Deserilaiization_EXTERNAL_OBJECTS =
@@ -186,10 +201,11 @@ IMU_BMS_Deserilaiization: CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Imu_handle
 IMU_BMS_Deserilaiization: CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Input_handler.c.o
 IMU_BMS_Deserilaiization: CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Pdb_handler.c.o
 IMU_BMS_Deserilaiization: CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/bms_can.c.o
-IMU_BMS_Deserilaiization: CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.o
+IMU_BMS_Deserilaiization: CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.o
+IMU_BMS_Deserilaiization: CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.o
 IMU_BMS_Deserilaiization: CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make
 IMU_BMS_Deserilaiization: CMakeFiles/IMU_BMS_Deserilaiization.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking C executable IMU_BMS_Deserilaiization"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking C executable IMU_BMS_Deserilaiization"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/IMU_BMS_Deserilaiization.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

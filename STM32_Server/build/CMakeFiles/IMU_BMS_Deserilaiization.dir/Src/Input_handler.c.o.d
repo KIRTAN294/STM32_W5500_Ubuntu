@@ -16,8 +16,9 @@ CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Input_handler.c.o: \
  /usr/include/x86_64-linux-gnu/bits/time64.h \
  /usr/include/x86_64-linux-gnu/bits/wchar.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h /usr/include/stdio.h \
- /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+ /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Server/Inc/tcp_client.h \
+ /usr/include/stdio.h /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h \
  /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \

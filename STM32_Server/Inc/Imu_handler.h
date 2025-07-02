@@ -17,6 +17,6 @@ typedef struct {
 
 extern EulerAngles angles;
 
-int Imu_data_receive(int Client);
+int Imu_data_receive(int UDP_client_fd);
 
 #endif

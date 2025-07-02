@@ -16,6 +16,9 @@
         "dbccodeconf.h": "c",
         "fstream": "c",
         "ctype.h": "c",
-        "input_handler.h": "c"
+        "input_handler.h": "c",
+        "tcp_udp_client.h": "c",
+        "stdlib.h": "c",
+        "pdb_handler.h": "c"
     }
 }

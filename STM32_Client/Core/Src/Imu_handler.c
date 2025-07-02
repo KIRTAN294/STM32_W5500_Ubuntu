@@ -10,10 +10,9 @@
 
 extern TIM_HandleTypeDef htim3;
 
-
+bool Imu_message = false;
 uint8_t accept[40];
 int total_size = 0;
-bool Imu_message = false;
 uint16_t buffer_index = 0;
 volatile uint32_t last_imu_time= 0;
 

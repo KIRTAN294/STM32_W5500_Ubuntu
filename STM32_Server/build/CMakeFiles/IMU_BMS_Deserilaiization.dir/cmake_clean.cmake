@@ -11,8 +11,10 @@ file(REMOVE_RECURSE
   "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Pdb_handler.c.o.d"
   "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/bms_can.c.o"
   "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/bms_can.c.o.d"
-  "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.o"
-  "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.o.d"
+  "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.o"
+  "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_client.c.o.d"
+  "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.o"
+  "CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/udp_client.c.o.d"
   "IMU_BMS_Deserilaiization"
   "IMU_BMS_Deserilaiization.pdb"
 )

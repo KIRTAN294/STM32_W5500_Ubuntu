@@ -162,24 +162,24 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named IMU_BMS_Deserilaiization
+# Target rules for targets named main
 
 # Build rule for target.
-IMU_BMS_Deserilaiization: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 IMU_BMS_Deserilaiization
-.PHONY : IMU_BMS_Deserilaiization
+main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 main
+.PHONY : main
 
 # fast build rule for target.
-IMU_BMS_Deserilaiization/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/build
-.PHONY : IMU_BMS_Deserilaiization/fast
+main/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/build
+.PHONY : main/fast
 
 Src/Bms_handler.o: Src/Bms_handler.c.o
 .PHONY : Src/Bms_handler.o
 
 # target to build an object file
 Src/Bms_handler.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Bms_handler.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/Bms_handler.c.o
 .PHONY : Src/Bms_handler.c.o
 
 Src/Bms_handler.i: Src/Bms_handler.c.i
@@ -187,7 +187,7 @@ Src/Bms_handler.i: Src/Bms_handler.c.i
 
 # target to preprocess a source file
 Src/Bms_handler.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Bms_handler.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/Bms_handler.c.i
 .PHONY : Src/Bms_handler.c.i
 
 Src/Bms_handler.s: Src/Bms_handler.c.s
@@ -195,39 +195,15 @@ Src/Bms_handler.s: Src/Bms_handler.c.s
 
 # target to generate assembly for a file
 Src/Bms_handler.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Bms_handler.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/Bms_handler.c.s
 .PHONY : Src/Bms_handler.c.s
-
-Src/IMU_BMS_Deserialization.o: Src/IMU_BMS_Deserialization.c.o
-.PHONY : Src/IMU_BMS_Deserialization.o
-
-# target to build an object file
-Src/IMU_BMS_Deserialization.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/IMU_BMS_Deserialization.c.o
-.PHONY : Src/IMU_BMS_Deserialization.c.o
-
-Src/IMU_BMS_Deserialization.i: Src/IMU_BMS_Deserialization.c.i
-.PHONY : Src/IMU_BMS_Deserialization.i
-
-# target to preprocess a source file
-Src/IMU_BMS_Deserialization.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/IMU_BMS_Deserialization.c.i
-.PHONY : Src/IMU_BMS_Deserialization.c.i
-
-Src/IMU_BMS_Deserialization.s: Src/IMU_BMS_Deserialization.c.s
-.PHONY : Src/IMU_BMS_Deserialization.s
-
-# target to generate assembly for a file
-Src/IMU_BMS_Deserialization.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/IMU_BMS_Deserialization.c.s
-.PHONY : Src/IMU_BMS_Deserialization.c.s
 
 Src/Imu_handler.o: Src/Imu_handler.c.o
 .PHONY : Src/Imu_handler.o
 
 # target to build an object file
 Src/Imu_handler.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Imu_handler.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/Imu_handler.c.o
 .PHONY : Src/Imu_handler.c.o
 
 Src/Imu_handler.i: Src/Imu_handler.c.i
@@ -235,7 +211,7 @@ Src/Imu_handler.i: Src/Imu_handler.c.i
 
 # target to preprocess a source file
 Src/Imu_handler.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Imu_handler.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/Imu_handler.c.i
 .PHONY : Src/Imu_handler.c.i
 
 Src/Imu_handler.s: Src/Imu_handler.c.s
@@ -243,7 +219,7 @@ Src/Imu_handler.s: Src/Imu_handler.c.s
 
 # target to generate assembly for a file
 Src/Imu_handler.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Imu_handler.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/Imu_handler.c.s
 .PHONY : Src/Imu_handler.c.s
 
 Src/Input_handler.o: Src/Input_handler.c.o
@@ -251,7 +227,7 @@ Src/Input_handler.o: Src/Input_handler.c.o
 
 # target to build an object file
 Src/Input_handler.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Input_handler.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/Input_handler.c.o
 .PHONY : Src/Input_handler.c.o
 
 Src/Input_handler.i: Src/Input_handler.c.i
@@ -259,7 +235,7 @@ Src/Input_handler.i: Src/Input_handler.c.i
 
 # target to preprocess a source file
 Src/Input_handler.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Input_handler.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/Input_handler.c.i
 .PHONY : Src/Input_handler.c.i
 
 Src/Input_handler.s: Src/Input_handler.c.s
@@ -267,7 +243,7 @@ Src/Input_handler.s: Src/Input_handler.c.s
 
 # target to generate assembly for a file
 Src/Input_handler.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Input_handler.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/Input_handler.c.s
 .PHONY : Src/Input_handler.c.s
 
 Src/Pdb_handler.o: Src/Pdb_handler.c.o
@@ -275,7 +251,7 @@ Src/Pdb_handler.o: Src/Pdb_handler.c.o
 
 # target to build an object file
 Src/Pdb_handler.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Pdb_handler.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/Pdb_handler.c.o
 .PHONY : Src/Pdb_handler.c.o
 
 Src/Pdb_handler.i: Src/Pdb_handler.c.i
@@ -283,7 +259,7 @@ Src/Pdb_handler.i: Src/Pdb_handler.c.i
 
 # target to preprocess a source file
 Src/Pdb_handler.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Pdb_handler.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/Pdb_handler.c.i
 .PHONY : Src/Pdb_handler.c.i
 
 Src/Pdb_handler.s: Src/Pdb_handler.c.s
@@ -291,7 +267,7 @@ Src/Pdb_handler.s: Src/Pdb_handler.c.s
 
 # target to generate assembly for a file
 Src/Pdb_handler.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/Pdb_handler.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/Pdb_handler.c.s
 .PHONY : Src/Pdb_handler.c.s
 
 Src/bms_can.o: Src/bms_can.c.o
@@ -299,7 +275,7 @@ Src/bms_can.o: Src/bms_can.c.o
 
 # target to build an object file
 Src/bms_can.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/bms_can.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/bms_can.c.o
 .PHONY : Src/bms_can.c.o
 
 Src/bms_can.i: Src/bms_can.c.i
@@ -307,7 +283,7 @@ Src/bms_can.i: Src/bms_can.c.i
 
 # target to preprocess a source file
 Src/bms_can.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/bms_can.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/bms_can.c.i
 .PHONY : Src/bms_can.c.i
 
 Src/bms_can.s: Src/bms_can.c.s
@@ -315,32 +291,80 @@ Src/bms_can.s: Src/bms_can.c.s
 
 # target to generate assembly for a file
 Src/bms_can.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/bms_can.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/bms_can.c.s
 .PHONY : Src/bms_can.c.s
 
-Src/tcp_server.o: Src/tcp_server.c.o
-.PHONY : Src/tcp_server.o
+Src/main.o: Src/main.c.o
+.PHONY : Src/main.o
 
 # target to build an object file
-Src/tcp_server.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.o
-.PHONY : Src/tcp_server.c.o
+Src/main.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/main.c.o
+.PHONY : Src/main.c.o
 
-Src/tcp_server.i: Src/tcp_server.c.i
-.PHONY : Src/tcp_server.i
+Src/main.i: Src/main.c.i
+.PHONY : Src/main.i
 
 # target to preprocess a source file
-Src/tcp_server.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.i
-.PHONY : Src/tcp_server.c.i
+Src/main.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/main.c.i
+.PHONY : Src/main.c.i
 
-Src/tcp_server.s: Src/tcp_server.c.s
-.PHONY : Src/tcp_server.s
+Src/main.s: Src/main.c.s
+.PHONY : Src/main.s
 
 # target to generate assembly for a file
-Src/tcp_server.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/IMU_BMS_Deserilaiization.dir/build.make CMakeFiles/IMU_BMS_Deserilaiization.dir/Src/tcp_server.c.s
-.PHONY : Src/tcp_server.c.s
+Src/main.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/main.c.s
+.PHONY : Src/main.c.s
+
+Src/tcp_client.o: Src/tcp_client.c.o
+.PHONY : Src/tcp_client.o
+
+# target to build an object file
+Src/tcp_client.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/tcp_client.c.o
+.PHONY : Src/tcp_client.c.o
+
+Src/tcp_client.i: Src/tcp_client.c.i
+.PHONY : Src/tcp_client.i
+
+# target to preprocess a source file
+Src/tcp_client.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/tcp_client.c.i
+.PHONY : Src/tcp_client.c.i
+
+Src/tcp_client.s: Src/tcp_client.c.s
+.PHONY : Src/tcp_client.s
+
+# target to generate assembly for a file
+Src/tcp_client.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/tcp_client.c.s
+.PHONY : Src/tcp_client.c.s
+
+Src/udp_client.o: Src/udp_client.c.o
+.PHONY : Src/udp_client.o
+
+# target to build an object file
+Src/udp_client.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/udp_client.c.o
+.PHONY : Src/udp_client.c.o
+
+Src/udp_client.i: Src/udp_client.c.i
+.PHONY : Src/udp_client.i
+
+# target to preprocess a source file
+Src/udp_client.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/udp_client.c.i
+.PHONY : Src/udp_client.c.i
+
+Src/udp_client.s: Src/udp_client.c.s
+.PHONY : Src/udp_client.s
+
+# target to generate assembly for a file
+Src/udp_client.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Src/udp_client.c.s
+.PHONY : Src/udp_client.c.s
 
 # Help Target
 help:
@@ -354,13 +378,10 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
-	@echo "... IMU_BMS_Deserilaiization"
+	@echo "... main"
 	@echo "... Src/Bms_handler.o"
 	@echo "... Src/Bms_handler.i"
 	@echo "... Src/Bms_handler.s"
-	@echo "... Src/IMU_BMS_Deserialization.o"
-	@echo "... Src/IMU_BMS_Deserialization.i"
-	@echo "... Src/IMU_BMS_Deserialization.s"
 	@echo "... Src/Imu_handler.o"
 	@echo "... Src/Imu_handler.i"
 	@echo "... Src/Imu_handler.s"
@@ -373,9 +394,15 @@ help:
 	@echo "... Src/bms_can.o"
 	@echo "... Src/bms_can.i"
 	@echo "... Src/bms_can.s"
-	@echo "... Src/tcp_server.o"
-	@echo "... Src/tcp_server.i"
-	@echo "... Src/tcp_server.s"
+	@echo "... Src/main.o"
+	@echo "... Src/main.i"
+	@echo "... Src/main.s"
+	@echo "... Src/tcp_client.o"
+	@echo "... Src/tcp_client.i"
+	@echo "... Src/tcp_client.s"
+	@echo "... Src/udp_client.o"
+	@echo "... Src/udp_client.i"
+	@echo "... Src/udp_client.s"
 .PHONY : help
 
 

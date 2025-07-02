@@ -170,78 +170,81 @@ int main(void)
  wizchip_setnetinfo(&netInfo);
 
 // tcp_server_host();
- uint8_t SOCKET = socket(TCP_SOCKET,Sn_MR_TCP,LOCAL_PORT,0);
- if(SOCKET == TCP_SOCKET){
+// uint8_t SOCKET = socket(TCP_SOCKET,Sn_MR_TCP,LOCAL_PORT,0);
+// if(SOCKET == TCP_SOCKET){
+//
+//	  listen(TCP_SOCKET);
+//}
+ uint8_t UDP_socket = socket(UDP_SOCKET,Sn_MR_UDP ,LOCAL_PORT,0);
 
-	  int mode = getSn_MR(TCP_SOCKET);
-	  mode |= Sn_MR_ND;
-	  setSn_MR(TCP_SOCKET, mode);
-	  connect(TCP_SOCKET, S_ADDR, S_PORT);
-	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0,GPIO_PIN_SET);
+  if(UDP_socket != UDP_SOCKET){
+ 	 Error_Handler();
+  }
 
-
-}
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  switch (getSn_SR(TCP_SOCKET)) {
-	          case SOCK_ESTABLISHED:
-	              if (getSn_IR(TCP_SOCKET) & Sn_IR_CON) {
-	                  setSn_IR(TCP_SOCKET, Sn_IR_CON);
-	                  Newmessage1 = false;
-	                  Nextmessage1 = false;
-	              }
 
-	              uint16_t rxSize = getSn_RX_RSR(TCP_SOCKET);
-	              if (rxSize >= sizeof(Commandtype)) {
-	                  int32_t received = recv(TCP_SOCKET, &received_cmd, sizeof(received_cmd));
-	                  if (received == sizeof(received_cmd)) {
-
-	                      if (received_cmd == Send_IMU_Data) {
-	                          Newmessage1 = true;
-	                          Nextmessage1 = false;
-	                          HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
-	                      } else if (received_cmd == Send_BMS_Data) {
-	                          Newmessage1 = false;
-	                          Nextmessage1 = true;
-	                          HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
-	                      }
-	                  }
-	              }
-	              if (Newmessage1 && getSn_SR(TCP_SOCKET) == SOCK_ESTABLISHED){
-	                  sendimudata();
-	              }
-	              if (Nextmessage1) {
-	                  sendbmsdata();
-	              }
-	              break;
-
-	          case SOCK_CLOSE_WAIT:
-	              disconnect(TCP_SOCKET);
-
-	              break;
-
-	          case SOCK_CLOSED:
-	              if (socket(TCP_SOCKET, Sn_MR_TCP, LOCAL_PORT, 0) == TCP_SOCKET) {
-	                  connect(TCP_SOCKET, S_ADDR, S_PORT);
-	                  total_size = 0;
-
-	              }
-	              break;
-	           }
-	      if (getSn_IR(TCP_SOCKET) & Sn_IR_TIMEOUT) {
-	          setSn_IR(TCP_SOCKET, Sn_IR_TIMEOUT);
-	          disconnect(TCP_SOCKET);
-
-	      }
+	  sendimudata();
+//	  HAL_Delay(10);
+//	  switch (getSn_SR(TCP_SOCKET)) {
+//	          case SOCK_ESTABLISHED:
+//	              if (getSn_IR(TCP_SOCKET) & Sn_IR_CON) {
+//	                  setSn_IR(TCP_SOCKET, Sn_IR_CON);
+//	                  Newmessage1 = false;
+//	                  Nextmessage1 = false;
+//	              }
+//
+//	              uint16_t rxSize = getSn_RX_RSR(TCP_SOCKET);
+//	              if (rxSize >= sizeof(Commandtype)) {
+//	                  int32_t received = recv(TCP_SOCKET, &received_cmd, sizeof(received_cmd));
+//	                  if (received == sizeof(received_cmd)) {
+//
+//	                      if (received_cmd == Send_IMU_Data) {
+//	                          Newmessage1 = true;
+//	                          Nextmessage1 = false;
+//	                          HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+//	                      } else if (received_cmd == Send_BMS_Data) {
+//	                          Newmessage1 = false;
+//	                          Nextmessage1 = true;
+//	                          HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+//	                      }
+//	                  }
+//	              }
+//	              if (Newmessage1 && getSn_SR(TCP_SOCKET) == SOCK_ESTABLISHED){
+//	                  sendimudata();
+//	              }
+//	              if (Nextmessage1) {
+//	                  sendbmsdata();
+//	              }
+//	              break;
+//
+//	          case SOCK_CLOSE_WAIT:
+//	              disconnect(TCP_SOCKET);
+//
+//	              break;
+//
+//	          case SOCK_CLOSED:
+//	              if (socket(TCP_SOCKET, Sn_MR_TCP, LOCAL_PORT, 0) == TCP_SOCKET) {
+//	                  listen(TCP_SOCKET);
+//	                  total_size = 0;
+//
+//	              }
+//	              break;
+//	           }
+//	      if (getSn_IR(TCP_SOCKET) & Sn_IR_TIMEOUT) {
+//	          setSn_IR(TCP_SOCKET, Sn_IR_TIMEOUT);
+//	          disconnect(TCP_SOCKET);
+//
+//	      }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
-//    HAL_Delay(50);
+    HAL_Delay(100);
   /* USER CODE END 3 */
 }
 
@@ -522,27 +525,16 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0|GPIO_PIN_1|CS_PIN_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(CS_PIN_GPIO_Port, CS_PIN_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pins : PA0 PA1 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
+  /*Configure GPIO pins : PA0 PA1 CS_PIN_Pin */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|CS_PIN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : CS_PIN_Pin */
-  GPIO_InitStruct.Pin = CS_PIN_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(CS_PIN_GPIO_Port, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 

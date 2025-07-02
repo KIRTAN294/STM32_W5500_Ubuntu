@@ -60,8 +60,8 @@ all: main-build
 main-build: Socket_Prog.elf secondary-outputs
 
 # Tool invocations
-Socket_Prog.elf Socket_Prog.map: $(OBJS) $(USER_OBJS) /home/kirtan/Safety_Embedded_board/Mule_V3/Ethernet_Integration/STM_W5500/STM32_IMU_BMS/STM32_Client/STM32G474RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Socket_Prog.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/kirtan/Safety_Embedded_board/Mule_V3/Ethernet_Integration/STM_W5500/STM32_IMU_BMS/STM32_Client/STM32G474RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Socket_Prog.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+Socket_Prog.elf Socket_Prog.map: $(OBJS) $(USER_OBJS) /home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Client/STM32G474RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Socket_Prog.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"/home/kirtan/Desktop/STM32_W5500_Ubuntu/STM32_Client/STM32G474RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Socket_Prog.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
